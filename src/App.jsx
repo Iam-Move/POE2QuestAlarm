@@ -300,10 +300,10 @@ function App() {
     <div className="min-h-screen py-6 px-4">
       <div className="max-w-4xl mx-auto">
         <header className="mb-6 border-b border-yellow-500/30 pb-3">
-          <div className="flex items-center justify-between mb-2">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div>
-              <h1 className="text-3xl font-bold text-yellow-500">POE2 퀘스트 네비게이션</h1>
-              <p className="text-sm text-gray-400 mt-1">
+              <h1 className="text-2xl sm:text-3xl font-bold text-yellow-500">POE2 퀘스트 네비게이션</h1>
+              <p className="text-xs sm:text-sm text-gray-400 mt-1">
                 by <span className="text-yellow-400 font-medium">IamMove</span>
                 {' • '}
                 <a
@@ -318,7 +318,7 @@ function App() {
             </div>
             <button
               onClick={() => setIsGuideOpen(true)}
-              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg transition-colors flex items-center gap-2"
+              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg transition-colors flex items-center gap-2 self-start sm:self-auto"
               title="사용 안내 보기"
             >
               <span className="text-lg">📖</span>
@@ -327,10 +327,10 @@ function App() {
           </div>
         </header>
 
-        <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
+        <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <FilterBar currentFilter={filter} onFilterChange={handleFilterChange} />
 
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-3">
             <span className="text-sm text-gray-400">
               {completedQuests}/{totalQuests} 완료
             </span>
