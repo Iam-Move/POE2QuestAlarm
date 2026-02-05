@@ -8,6 +8,42 @@ import { createPortal } from 'react-dom';
 function PIPOverlay({ pipWindow, acts, completed, onToggle, currentFilter }) {
   const containerRef = useRef(null);
   const [isReady, setIsReady] = useState(false);
+  const [completingQuests, setCompletingQuests] = useState(new Set()); // 완료 중인 퀘스트
+  const [fadingQuests, setFadingQuests] = useState(new Set()); // 페이드아웃 중인 퀘스트
+  const prevCompletedRef = useRef([]); // 이전 completed 상태 저장
+
+  // 완료된 퀘스트 애니메이션 처리
+  useEffect(() => {
+    const prevCompleted = prevCompletedRef.current;
+    const newCompleted = completed.filter(id => !prevCompleted.includes(id));
+
+    // 현재 completed를 저장
+    prevCompletedRef.current = completed;
+
+    if (newCompleted.length > 0) {
+      // 새로 완료된 퀘스트를 completing 상태로 설정
+      setCompletingQuests(prev => new Set([...prev, ...newCompleted]));
+
+      // 1초 후 페이드아웃 시작
+      setTimeout(() => {
+        setFadingQuests(prev => new Set([...prev, ...newCompleted]));
+
+        // 추가 1초 후 완전히 제거
+        setTimeout(() => {
+          setCompletingQuests(prev => {
+            const next = new Set(prev);
+            newCompleted.forEach(id => next.delete(id));
+            return next;
+          });
+          setFadingQuests(prev => {
+            const next = new Set(prev);
+            newCompleted.forEach(id => next.delete(id));
+            return next;
+          });
+        }, 1000);
+      }, 1000);
+    }
+  }, [completed]);
 
   useEffect(() => {
     if (!pipWindow || !pipWindow.document) return;
@@ -70,11 +106,13 @@ function PIPOverlay({ pipWindow, acts, completed, onToggle, currentFilter }) {
 
   if (!isReady || !containerRef.current) return null;
 
-  // 완료되지 않은 퀘스트만 필터링
+  // 완료되지 않은 퀘스트 + 완료 중인 퀘스트(애니메이션 표시용)만 필터링
   const uncompletedActs = acts
     .map(act => ({
       ...act,
-      quests: act.quests.filter(q => !completed.includes(q.id))
+      quests: act.quests.filter(q =>
+        !completed.includes(q.id) || completingQuests.has(q.id)
+      )
     }))
     .filter(act => act.quests.length > 0);
 
@@ -97,29 +135,54 @@ function PIPOverlay({ pipWindow, acts, completed, onToggle, currentFilter }) {
             </h3>
 
             <div className="space-y-1">
-              {act.quests.map(quest => (
-                <div
-                  key={quest.id}
-                  className="flex items-start gap-2 p-2 hover:bg-gray-800 rounded transition-colors cursor-pointer"
-                  onClick={() => onToggle(quest.id)}
-                >
-                  <input
-                    type="checkbox"
-                    checked={false}
-                    onChange={() => onToggle(quest.id)}
-                    className="mt-0.5 flex-shrink-0"
-                    onClick={(e) => e.stopPropagation()}
-                  />
-                  <div className="flex-1 text-xs">
-                    <div className="font-medium">{quest.name}</div>
-                    {quest.reward && (
-                      <div className="text-yellow-400 text-[10px]">
-                        {quest.reward}
+              {act.quests.map(quest => {
+                const isCompleting = completingQuests.has(quest.id);
+                const isFading = fadingQuests.has(quest.id);
+
+                return (
+                  <div
+                    key={quest.id}
+                    className="flex items-start gap-2 p-2 hover:bg-gray-800 rounded cursor-pointer"
+                    style={{
+                      opacity: isFading ? 0 : 1,
+                      transition: 'opacity 1s ease-out',
+                    }}
+                    onClick={() => onToggle(quest.id)}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={isCompleting}
+                      onChange={() => onToggle(quest.id)}
+                      className="mt-0.5 flex-shrink-0"
+                      onClick={(e) => e.stopPropagation()}
+                    />
+                    <div className="flex-1 text-xs">
+                      <div
+                        className="font-medium"
+                        style={{
+                          textDecoration: isCompleting ? 'line-through' : 'none',
+                          opacity: isCompleting ? 0.6 : 1,
+                          transition: 'all 0.3s ease-out',
+                        }}
+                      >
+                        {quest.name}
                       </div>
-                    )}
+                      {quest.reward && (
+                        <div
+                          className="text-yellow-400 text-[10px]"
+                          style={{
+                            textDecoration: isCompleting ? 'line-through' : 'none',
+                            opacity: isCompleting ? 0.6 : 1,
+                            transition: 'all 0.3s ease-out',
+                          }}
+                        >
+                          {quest.reward}
+                        </div>
+                      )}
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         ))
