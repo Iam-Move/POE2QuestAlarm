@@ -68,7 +68,7 @@ function ShareDialog({ isOpen, onClose, filter, completed, customFilters }) {
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="https://poe2alarm.iammove.com"
+              placeholder="https://poe2questalarm.iammove.com"
               rows={3}
               className="w-full bg-poe-dark border border-poe-border rounded px-3 py-2 text-white placeholder-gray-500 resize-none"
             />
