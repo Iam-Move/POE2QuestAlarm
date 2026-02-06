@@ -1,5 +1,50 @@
 import { useState } from 'react';
 
+// 보상 타입을 파싱하는 함수
+function parseRewardType(reward) {
+  if (!reward) return null;
+
+  const lowerReward = reward.toLowerCase();
+
+  // 패시브 포인트 (금색)
+  if (lowerReward.includes('패시브') ||
+      lowerReward.includes('스킬 포인트') ||
+      lowerReward.includes('skill point') ||
+      lowerReward.includes('passive')) {
+    return {
+      type: 'passive',
+      icon: '⚡',
+      className: 'bg-gradient-to-r from-yellow-500 to-yellow-600'
+    };
+  }
+
+  // 스탯 보너스 (파란색)
+  if (lowerReward.includes('저항') ||
+      lowerReward.includes('능력치') ||
+      lowerReward.includes('스탯') ||
+      lowerReward.includes('+') ||
+      lowerReward.includes('%') ||
+      lowerReward.includes('방어도') ||
+      lowerReward.includes('회피') ||
+      lowerReward.includes('보호막') ||
+      lowerReward.includes('힘') ||
+      lowerReward.includes('민첩') ||
+      lowerReward.includes('지능')) {
+    return {
+      type: 'stat',
+      icon: '🛡️',
+      className: 'bg-gradient-to-r from-blue-500 to-blue-600'
+    };
+  }
+
+  // 아이템/기타 (보라색)
+  return {
+    type: 'item',
+    icon: '🏆',
+    className: 'bg-gradient-to-r from-purple-500 to-purple-600'
+  };
+}
+
 function QuestCard({
   quest,
   isCompleted,
@@ -43,73 +88,76 @@ function QuestCard({
   return (
     <div
       className={`
-        quest-card mb-3 p-3 rounded border
+        quest-card glass-card mb-3 p-3 rounded-lg z-card
         ${isCompleted && !isEditMode ? 'completed' : ''}
-        ${isEditMode ? 'bg-poe-card/50 border-orange-400/30' : 'bg-poe-dark/20 border-poe-border/10'}
+        ${isEditMode ? 'border-orange-400/30' : ''}
       `}
     >
       {isEditMode ? (
-        // 편집 모드: 완료 체크박스 없이, 입력 필드와 삭제 버튼
-        <div className="space-y-2">
+        // 편집 모드: 인라인 편집 스타일
+        <div>
           {/* Custom 필터일 때 반영여부 체크박스 */}
           {currentFilter === 'custom' && (
-            <label className="flex items-center gap-2 text-sm text-orange-400 cursor-pointer mb-3">
+            <label className="flex items-center gap-2 text-xs text-orange-400 cursor-pointer mb-2">
               <input
                 type="checkbox"
                 checked={isCustomEnabled}
                 onChange={() => onToggleCustom(quest.id)}
-                className="w-4 h-4"
+                className="w-3.5 h-3.5"
               />
-              <span className="font-medium">✓ Custom 반영 (체크해야 편집모드 OFF 시 표시)</span>
+              <span className="font-medium">Custom 반영</span>
             </label>
           )}
 
-          {/* 퀘스트 이름 */}
-          <div>
-            <label className="block text-xs text-gray-400 mb-1">퀘스트 이름</label>
-            <input
-              type="text"
-              value={editedName}
-              onChange={(e) => setEditedName(e.target.value)}
-              onBlur={handleBlur}
-              className="w-full bg-poe-dark border border-poe-border rounded px-3 py-2 text-white font-medium focus:outline-none focus:border-yellow-500"
-              placeholder="퀘스트 이름을 입력하세요"
-            />
+          {/* 퀘스트 이름 - 인라인 편집 */}
+          <input
+            type="text"
+            value={editedName}
+            onChange={(e) => setEditedName(e.target.value)}
+            onBlur={handleBlur}
+            className="w-full text-base font-medium bg-transparent border-0 border-b border-transparent hover:border-gray-600 focus:border-yellow-500 focus:outline-none transition-colors px-0 py-1 mb-2"
+            placeholder="퀘스트 이름을 입력하세요"
+          />
+
+          {/* 보상과 메모 - 한 줄에 나란히 */}
+          <div className="flex gap-3 mb-1">
+            {/* 보상 입력 */}
+            <div className="flex-1">
+              <input
+                type="text"
+                value={editedReward}
+                onChange={(e) => setEditedReward(e.target.value)}
+                onBlur={handleBlur}
+                className="w-full text-sm text-yellow-400 bg-transparent border-0 border-b border-transparent hover:border-gray-600 focus:border-yellow-500 focus:outline-none transition-colors px-0 py-1"
+                placeholder="보상 (예: 패시브 포인트)"
+              />
+            </div>
+
+            {/* 구분선 */}
+            <div className="text-gray-600 text-sm">|</div>
+
+            {/* 메모 입력 */}
+            <div className="flex-1">
+              <input
+                type="text"
+                value={editedNote}
+                onChange={(e) => setEditedNote(e.target.value)}
+                onBlur={handleBlur}
+                className="w-full text-sm text-gray-400 bg-transparent border-0 border-b border-transparent hover:border-gray-600 focus:border-yellow-500 focus:outline-none transition-colors px-0 py-1"
+                placeholder="메모 (예: 필수 퀘스트)"
+              />
+            </div>
           </div>
 
-          {/* 보상 */}
-          <div>
-            <label className="block text-xs text-gray-400 mb-1">보상 (선택)</label>
-            <input
-              type="text"
-              value={editedReward}
-              onChange={(e) => setEditedReward(e.target.value)}
-              onBlur={handleBlur}
-              className="w-full bg-poe-dark border border-poe-border rounded px-3 py-2 text-yellow-400 text-sm focus:outline-none focus:border-yellow-500"
-              placeholder="예: 스킬 젬, 냉기저항 +10%"
-            />
+          {/* 삭제 버튼 - 작고 우측 하단 */}
+          <div className="flex justify-end mt-1">
+            <button
+              onClick={handleDelete}
+              className="text-xs text-red-400 hover:text-red-300 transition-colors flex items-center gap-1"
+            >
+              🗑️ 삭제
+            </button>
           </div>
-
-          {/* 메모 */}
-          <div>
-            <label className="block text-xs text-gray-400 mb-1">메모 (선택)</label>
-            <textarea
-              value={editedNote}
-              onChange={(e) => setEditedNote(e.target.value)}
-              onBlur={handleBlur}
-              rows={2}
-              className="w-full bg-poe-dark border border-poe-border rounded px-3 py-2 text-gray-300 text-sm resize-none focus:outline-none focus:border-yellow-500"
-              placeholder="팁이나 참고사항을 입력하세요"
-            />
-          </div>
-
-          {/* 삭제 버튼 */}
-          <button
-            onClick={handleDelete}
-            className="w-full mt-2 px-3 py-2 bg-red-600/20 hover:bg-red-600/40 text-red-400 text-sm rounded transition-colors border border-red-600/30"
-          >
-            🗑️ 이 퀘스트 삭제
-          </button>
         </div>
       ) : (
         // 일반 모드: 체크박스와 읽기 전용 표시
@@ -118,16 +166,29 @@ function QuestCard({
             type="checkbox"
             checked={isCompleted}
             onChange={() => onToggle(quest.id)}
-            className="mt-1 w-5 h-5 cursor-pointer flex-shrink-0"
+            className="custom-checkbox mt-1"
           />
           <div className="flex-1">
-            <h3 className="text-base font-medium mb-1">
+            <h3 className="text-base font-medium mb-2">
               {quest.name}
             </h3>
             {quest.reward && (
-              <p className="text-sm text-yellow-400 mb-1">
-                [보상: {quest.reward}]
-              </p>
+              <div className="flex flex-wrap gap-2 mb-2">
+                {quest.reward.split(',').map((reward, index) => {
+                  const rewardData = parseRewardType(reward.trim());
+                  if (!rewardData) return null;
+
+                  return (
+                    <span
+                      key={index}
+                      className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium text-white shadow-md ${rewardData.className}`}
+                    >
+                      <span>{rewardData.icon}</span>
+                      <span>{reward.trim()}</span>
+                    </span>
+                  );
+                })}
+              </div>
             )}
             {quest.note && (
               <p className="text-sm text-gray-400 italic">

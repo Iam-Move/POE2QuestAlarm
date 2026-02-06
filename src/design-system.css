@@ -1,0 +1,319 @@
+/* POE2 Quest Navigator - New Design System */
+
+/* ========================================
+   CSS Variables
+   ======================================== */
+:root {
+  /* Background Colors */
+  --bg-primary: #0a0a0f;
+  --bg-secondary: #12121a;
+  --bg-card: rgba(20, 20, 35, 0.6);
+  --bg-card-hover: rgba(30, 30, 50, 0.8);
+
+  /* Border Colors */
+  --border-subtle: rgba(255, 255, 255, 0.06);
+  --border-glow: rgba(212, 175, 55, 0.3);
+
+  /* Gold Colors */
+  --gold-primary: #d4af37;
+  --gold-light: #f4d03f;
+  --gold-dark: #b8860b;
+
+  /* Text Colors */
+  --text-primary: #e8e6e3;
+  --text-secondary: #9a9a9a;
+  --text-muted: #5a5a5a;
+
+  /* Accent Colors */
+  --accent-blue: #4a9eff;
+  --accent-purple: #9b59b6;
+  --accent-green: #2ecc71;
+  --accent-red: #e74c3c;
+
+  /* Effects */
+  --glass-blur: blur(20px);
+  --shadow-glow: 0 0 20px rgba(212, 175, 55, 0.3);
+  --shadow-card: 0 8px 32px rgba(0, 0, 0, 0.3);
+
+  /* Gradients */
+  --gradient-gold: linear-gradient(135deg, #d4af37 0%, #f4d03f 100%);
+  --gradient-gold-dark: linear-gradient(135deg, #d4af37 0%, #b8860b 100%);
+  --gradient-card-overlay: linear-gradient(135deg, rgba(212, 175, 55, 0.1) 0%, transparent 50%);
+}
+
+/* ========================================
+   Ambient Background
+   ======================================== */
+.ambient-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.ambient-background::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background:
+    radial-gradient(ellipse at 20% 20%, rgba(212, 175, 55, 0.08) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 80%, rgba(74, 158, 255, 0.05) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 50%, rgba(155, 89, 182, 0.03) 0%, transparent 60%);
+  animation: ambientPulse 20s ease-in-out infinite;
+}
+
+.ambient-background::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  opacity: 0.03;
+  pointer-events: none;
+}
+
+@keyframes ambientPulse {
+  0%, 100% {
+    transform: translate(0, 0) rotate(0deg);
+    opacity: 1;
+  }
+  50% {
+    transform: translate(-2%, -2%) rotate(1deg);
+    opacity: 0.8;
+  }
+}
+
+/* ========================================
+   Glass Card Effect
+   ======================================== */
+.glass-card {
+  background: var(--bg-card);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--border-subtle);
+  box-shadow:
+    var(--shadow-card),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  position: relative;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Fallback for browsers without backdrop-filter */
+@supports not (backdrop-filter: blur(20px)) {
+  .glass-card {
+    background: rgba(20, 20, 35, 0.95);
+  }
+}
+
+.glass-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--gradient-card-overlay);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+.glass-card:hover::before {
+  opacity: 1;
+}
+
+/* ========================================
+   Quest Card Styles
+   ======================================== */
+.quest-card {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.quest-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--border-glow);
+  box-shadow:
+    0 12px 40px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(212, 175, 55, 0.5),
+    var(--shadow-glow);
+}
+
+/* ========================================
+   Custom Checkbox
+   ======================================== */
+input[type="checkbox"].custom-checkbox {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 22px;
+  height: 22px;
+  border: 2px solid var(--text-muted);
+  border-radius: 6px;
+  background: rgba(18, 18, 26, 0.8);
+  cursor: pointer;
+  position: relative;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+  margin: 0;
+}
+
+input[type="checkbox"].custom-checkbox:hover {
+  border-color: var(--gold-primary);
+}
+
+input[type="checkbox"].custom-checkbox:checked {
+  background: var(--gradient-gold);
+  border-color: var(--gold-primary);
+  box-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+}
+
+input[type="checkbox"].custom-checkbox:checked::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 12px;
+  height: 12px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230a0a0f' stroke-width='3'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+/* ========================================
+   Progress Bar
+   ======================================== */
+.progress-bar-container {
+  background: rgba(18, 18, 26, 0.8);
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--border-glow);
+  height: 8px;
+}
+
+.progress-bar-fill {
+  background: var(--gradient-gold);
+  height: 100%;
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.progress-bar-fill::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.3) 50%,
+    transparent 100%);
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* ========================================
+   Custom Scrollbar
+   ======================================== */
+/* WebKit browsers (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(18, 18, 26, 0.5);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--gradient-gold);
+  border-radius: 4px;
+  transition: background 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--gold-light);
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--gold-primary) rgba(18, 18, 26, 0.5);
+}
+
+/* ========================================
+   Logo Icon
+   ======================================== */
+.logo-icon {
+  width: 48px;
+  height: 48px;
+  background: var(--gradient-gold);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Cinzel', serif;
+  font-weight: 700;
+  font-size: 1.2rem;
+  color: var(--bg-primary);
+  box-shadow: 0 4px 20px rgba(212, 175, 55, 0.3);
+  flex-shrink: 0;
+}
+
+/* ========================================
+   Responsive Optimizations
+   ======================================== */
+@media (max-width: 640px) {
+  .glass-card {
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+  }
+
+  .ambient-background::before {
+    animation: none; /* Save mobile battery */
+  }
+
+  .quest-card:hover {
+    transform: none; /* No transform on touch devices */
+  }
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .ambient-background::before {
+    animation: none !important;
+  }
+}
+
+/* ========================================
+   Z-Index Layers
+   ======================================== */
+.z-background { z-index: -1; }
+.z-base { z-index: 0; }
+.z-card { z-index: 1; }
+.z-header { z-index: 10; }
+.z-modal { z-index: 100; }
+.z-drag-overlay { z-index: 1000; }
+.z-pip { z-index: 10000; }

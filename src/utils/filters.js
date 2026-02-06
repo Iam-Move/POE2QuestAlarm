@@ -34,7 +34,7 @@ export const FILTER_MODES = {
 export const FILTER_LABELS = {
   regular: 'Regular',
   semiStrict: 'Semi-Strict',
-  uber: 'Uber Strict',
+  uber: 'Uber',
   custom: 'Custom'
 };
 

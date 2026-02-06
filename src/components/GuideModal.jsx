@@ -16,11 +16,24 @@ function GuideModal({ isOpen, onClose }) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/95 backdrop-blur-sm">
-      <div className="bg-poe-dark border border-poe-border/50 rounded-lg max-w-3xl max-h-[90vh] overflow-y-auto w-full shadow-2xl">
+    <div className="fixed inset-0 z-modal flex items-center justify-center p-4 backdrop-blur-md"
+         style={{ background: 'rgba(10, 10, 15, 0.95)' }}>
+      <div className="glass-card rounded-xl max-w-3xl max-h-[90vh] overflow-y-auto w-full shadow-2xl">
         {/* 헤더 */}
-        <div className="sticky top-0 bg-[#0f1419] border-b border-poe-border/30 p-4 flex justify-between items-center z-10">
-          <h2 className="text-xl font-bold text-yellow-500">📖 사용 안내</h2>
+        <div className="sticky top-0 border-b p-4 flex justify-between items-center z-10"
+             style={{
+               background: 'var(--bg-secondary)',
+               borderColor: 'var(--border-subtle)'
+             }}>
+          <h2 className="text-xl font-title font-bold"
+              style={{
+                background: 'var(--gradient-gold)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text'
+              }}>
+            📖 사용 안내
+          </h2>
           <button
             onClick={onClose}
             className="text-gray-400 hover:text-white text-2xl leading-none px-2"
@@ -65,7 +78,7 @@ function GuideModal({ isOpen, onClose }) {
                 </ol>
               ),
               li: ({ children }) => (
-                <li className="ml-2">{children}</li>
+                <li className="ml-2 mb-2 leading-relaxed break-words">{children}</li>
               ),
               strong: ({ children }) => (
                 <strong className="text-yellow-400 font-semibold">
@@ -87,10 +100,14 @@ function GuideModal({ isOpen, onClose }) {
         </div>
 
         {/* 푸터 */}
-        <div className="sticky bottom-0 bg-[#0f1419] border-t border-poe-border/30 p-4 flex justify-end z-10">
+        <div className="sticky bottom-0 border-t p-4 flex justify-end z-10"
+             style={{
+               background: 'var(--bg-secondary)',
+               borderColor: 'var(--border-subtle)'
+             }}>
           <button
             onClick={onClose}
-            className="px-6 py-2 bg-yellow-600 hover:bg-yellow-700 text-white rounded-lg transition-colors font-medium"
+            className="px-6 py-2 rounded-lg font-body font-semibold transition-all text-sm bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-white shadow-lg hover:shadow-xl hover:scale-105"
           >
             확인
           </button>

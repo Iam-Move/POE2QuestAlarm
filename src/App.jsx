@@ -6,6 +6,7 @@ import EditModeToggle from './components/EditModeToggle';
 import SharedSettingsAlert from './components/SharedSettingsAlert';
 import PIPOverlay from './components/PIPOverlay';
 import GuideModal from './components/GuideModal';
+import Logo from './components/Logo';
 import { filterQuests, FILTER_MODES } from './utils/filters';
 import { saveState, loadState, clearState } from './utils/storage';
 import { decodeStateFromUrl } from './utils/share';
@@ -192,7 +193,7 @@ function App() {
         setPipWindow(null);
       } else {
         // PIP 열기
-        const newPipWindow = await openPipWindow(450, 700);
+        const newPipWindow = await openPipWindow(450, 380);
         setPipWindow(newPipWindow);
 
         // PIP 창이 닫힐 때 상태 업데이트
@@ -297,20 +298,25 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen py-6 px-4">
-      <div className="max-w-4xl mx-auto">
-        <header className="mb-6 border-b border-yellow-500/30 pb-3">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+    <>
+      {/* Ambient Background */}
+      <div className="ambient-background" />
+
+      <div className="min-h-screen py-6 px-4 relative">
+        <div className="max-w-4xl mx-auto">
+        <header className="mb-6 pb-4" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
-              <h1 className="text-2xl sm:text-3xl font-bold text-yellow-500">POE2 퀘스트 네비게이션</h1>
-              <p className="text-xs sm:text-sm text-gray-400 mt-1">
-                by <span className="text-yellow-400 font-medium">IamMove</span>
+              <Logo />
+              <p className="text-xs sm:text-sm font-body mt-2" style={{ color: 'var(--text-secondary)' }}>
+                by <span style={{ color: 'var(--gold-light)' }} className="font-medium">IamMove</span>
                 {' • '}
                 <a
                   href="https://github.com/Iam-Move/POE2QuestAlarm/issues"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-blue-400 hover:text-blue-300 underline"
+                  className="hover:underline transition-colors"
+                  style={{ color: 'var(--accent-blue)' }}
                 >
                   문의하기
                 </a>
@@ -318,7 +324,7 @@ function App() {
             </div>
             <button
               onClick={() => setIsGuideOpen(true)}
-              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg transition-colors flex items-center gap-2 self-start sm:self-auto"
+              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg transition-all font-body flex items-center gap-2 self-start sm:self-auto shadow-lg hover:shadow-xl hover:scale-105"
               title="사용 안내 보기"
             >
               <span className="text-lg">📖</span>
@@ -327,14 +333,26 @@ function App() {
           </div>
         </header>
 
+        {/* Progress Bar */}
+        <div className="mb-6">
+          <div className="flex justify-between items-center mb-2">
+            <span className="text-sm font-body" style={{ color: 'var(--text-secondary)' }}>전체 진행률</span>
+            <span className="text-lg font-title font-semibold" style={{ color: 'var(--gold-primary)' }}>
+              {completedQuests} / {totalQuests}
+            </span>
+          </div>
+          <div className="progress-bar-container">
+            <div
+              className="progress-bar-fill"
+              style={{ width: `${overallProgress}%` }}
+            />
+          </div>
+        </div>
+
         <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <FilterBar currentFilter={filter} onFilterChange={handleFilterChange} />
 
           <div className="flex flex-wrap items-center gap-3">
-            <span className="text-sm text-gray-400">
-              {completedQuests}/{totalQuests} 완료
-            </span>
-
             <EditModeToggle
               isEditMode={isEditMode}
               onToggle={handleToggleEditMode}
@@ -343,19 +361,21 @@ function App() {
             {isPipSupported() && (
               <button
                 onClick={handleTogglePip}
-                className={`px-3 py-1.5 text-white text-sm rounded transition-colors ${
-                  pipWindow ? 'bg-purple-700 hover:bg-purple-800' : 'bg-purple-600 hover:bg-purple-700'
-                }`}
+                className={`px-4 py-2 rounded-lg font-body font-semibold transition-all text-sm ${
+                  pipWindow
+                    ? 'bg-gradient-to-r from-yellow-600 to-yellow-700 hover:from-yellow-700 hover:to-yellow-800'
+                    : 'bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700'
+                } text-white shadow-lg hover:shadow-xl hover:scale-105`}
                 title="게임 오버레이 모드"
               >
-                {pipWindow ? '오버레이 닫기' : '오버레이'}
+                오버레이
               </button>
             )}
 
             <ShareButton filter={filter} completed={completed} customFilters={customFilters} />
             <button
               onClick={handleReset}
-              className="px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white text-sm rounded transition-colors"
+              className="px-4 py-2 rounded-lg font-body font-semibold transition-all text-sm bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white shadow-lg hover:shadow-xl hover:scale-105"
             >
               초기화
             </button>
@@ -419,8 +439,9 @@ function App() {
           isOpen={isGuideOpen}
           onClose={() => setIsGuideOpen(false)}
         />
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 

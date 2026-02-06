@@ -8,7 +8,7 @@ function ShareButton({ filter, completed, customFilters }) {
     <>
       <button
         onClick={() => setIsDialogOpen(true)}
-        className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded transition-colors"
+        className="px-4 py-2 rounded-lg font-body font-semibold transition-all text-sm bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-white shadow-lg hover:shadow-xl hover:scale-105"
       >
         공유
       </button>

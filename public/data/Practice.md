@@ -89,7 +89,7 @@ Path of Exile 2 플레이어를 위한 **퀘스트 체크리스트 & 게임 오�
 
 ## 👤 제작자
 
-**IamMove** - Path of Exile 2 플레이어를 위한 도구
+**IamMove** - Developer & POE2 Player
 
 💬 **문의 및 피드백**: [GitHub Issues](https://github.com/Iam-Move/POE2QuestAlarm/issues)
 

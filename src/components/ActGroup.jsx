@@ -40,8 +40,8 @@ function SortableQuestCard({ quest, isEditMode, ...props }) {
 
   const style = {
     transform: CSS.Transform.toString(transform),
-    transition,
-    opacity: isDragging ? 0.5 : 1,
+    transition: transition || 'transform 150ms ease',
+    opacity: isDragging ? 0.3 : 1,
   };
 
   return (
@@ -90,7 +90,11 @@ function ActGroup({
   const [activeId, setActiveId] = useState(null);
 
   const sensors = useSensors(
-    useSensor(PointerSensor),
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     })
@@ -128,8 +132,12 @@ function ActGroup({
   const activeQuest = activeId ? act.quests.find((q) => q.id === activeId) : null;
 
   return (
-    <div className={`mb-8 border border-poe-border/20 rounded-lg p-4 ${bgColor}`}>
-      <h2 className="text-xl font-bold mb-4 text-yellow-500 border-b border-yellow-500/20 pb-2">
+    <div className={`mb-8 glass-card rounded-lg p-6 ${bgColor}`}>
+      <h2 className="text-2xl font-title font-semibold mb-4 pb-3 border-b"
+          style={{
+            color: 'var(--gold-primary)',
+            borderColor: 'var(--border-glow)'
+          }}>
         {act.name}
       </h2>
 
@@ -162,23 +170,7 @@ function ActGroup({
           </div>
         </SortableContext>
 
-        <DragOverlay>
-          {activeQuest ? (
-            <div className="opacity-90 rotate-3 scale-105">
-              <QuestCard
-                quest={activeQuest}
-                isCompleted={completed.includes(activeQuest.id)}
-                onToggle={onToggle}
-                isEditMode={isEditMode}
-                currentFilter={currentFilter}
-                isCustomEnabled={customFilters[activeQuest.id] === true}
-                onToggleCustom={onToggleCustom}
-                onUpdateQuest={onUpdateQuest}
-                onDeleteQuest={onDeleteQuest}
-              />
-            </div>
-          ) : null}
-        </DragOverlay>
+        {/* DragOverlay 제거 - 원본 카드만 표시 */}
       </DndContext>
 
       {/* 편집 모드에서만 추가 버튼 표시 */}

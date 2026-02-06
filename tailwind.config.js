@@ -7,6 +7,15 @@ export default {
   theme: {
     extend: {
       colors: {
+        // New Design System (CSS Variables)
+        primary: 'var(--bg-primary)',
+        secondary: 'var(--bg-secondary)',
+        gold: {
+          DEFAULT: 'var(--gold-primary)',
+          light: 'var(--gold-light)',
+          dark: 'var(--gold-dark)',
+        },
+        // Legacy POE colors (keep for compatibility)
         poe: {
           dark: '#0f1419',       // 메인 배경 - 어두운 청회색
           card: '#1a1f26',       // 카드 배경
@@ -24,7 +33,12 @@ export default {
         }
       },
       fontFamily: {
-        sans: ['Pretendard', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'Roboto', 'sans-serif'],
+        title: ['Cinzel', 'serif'],
+        body: ['Noto Sans KR', 'sans-serif'],
+        sans: ['Noto Sans KR', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'Roboto', 'sans-serif'],
+      },
+      backdropBlur: {
+        glass: '20px',
       }
     },
   },

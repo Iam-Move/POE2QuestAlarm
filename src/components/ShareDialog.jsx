@@ -43,9 +43,18 @@ function ShareDialog({ isOpen, onClose, filter, completed, customFilters }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 p-4">
-      <div className="bg-poe-card border-2 border-poe-border rounded-lg max-w-2xl w-full p-6">
-        <h2 className="text-2xl font-bold text-yellow-500 mb-4">설정 공유하기</h2>
+    <div className="fixed inset-0 z-modal flex items-center justify-center p-4 backdrop-blur-md"
+         style={{ background: 'rgba(10, 10, 15, 0.95)' }}>
+      <div className="glass-card rounded-xl max-w-2xl w-full p-6">
+        <h2 className="text-2xl font-title font-bold mb-4"
+            style={{
+              background: 'var(--gradient-gold)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text'
+            }}>
+          설정 공유하기
+        </h2>
 
         <div className="space-y-4 mb-6">
           <div>
@@ -77,7 +86,7 @@ function ShareDialog({ isOpen, onClose, filter, completed, customFilters }) {
           {!shareUrl ? (
             <button
               onClick={handleGenerate}
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 rounded transition-colors"
+              className="w-full px-4 py-2 rounded-lg font-body font-semibold transition-all text-sm bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-white shadow-lg hover:shadow-xl hover:scale-105"
             >
               공유 링크 생성
             </button>
@@ -91,10 +100,10 @@ function ShareDialog({ isOpen, onClose, filter, completed, customFilters }) {
               <div className="flex gap-2">
                 <button
                   onClick={handleCopy}
-                  className={`flex-1 font-medium py-2 rounded transition-colors ${
+                  className={`flex-1 px-4 py-2 rounded-lg font-body font-semibold transition-all text-sm shadow-lg hover:shadow-xl hover:scale-105 ${
                     copied
-                      ? 'bg-green-600 text-white'
-                      : 'bg-blue-600 hover:bg-blue-700 text-white'
+                      ? 'bg-gradient-to-r from-green-500 to-green-600 text-white'
+                      : 'bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-white'
                   }`}
                 >
                   {copied ? '✓ 복사 완료!' : '클립보드에 복사'}
@@ -106,7 +115,7 @@ function ShareDialog({ isOpen, onClose, filter, completed, customFilters }) {
 
         <button
           onClick={handleClose}
-          className="w-full bg-gray-600 hover:bg-gray-700 text-white py-2 rounded transition-colors"
+          className="w-full px-4 py-2 rounded-lg font-body font-medium transition-all text-sm bg-gray-600 hover:bg-gray-700 text-white shadow-md hover:shadow-lg"
         >
           닫기
         </button>

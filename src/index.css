@@ -1,10 +1,11 @@
 @import "tailwindcss";
+@import "./design-system.css";
 
 body {
   margin: 0;
-  background-color: #0f1419;
-  color: #e5e5e5;
-  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -29,8 +30,8 @@ code {
   opacity: 0.9;
 }
 
-/* 체크박스 스타일 */
-input[type="checkbox"] {
-  accent-color: #F7D060;
+/* 체크박스 스타일 - 기본 체크박스용 (커스텀 체크박스는 design-system.css 참조) */
+input[type="checkbox"]:not(.custom-checkbox) {
+  accent-color: var(--gold-primary);
   cursor: pointer;
 }
