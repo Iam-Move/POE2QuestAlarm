@@ -111,12 +111,24 @@ function App() {
   };
 
   const handleDeleteQuest = (questId) => {
-    // customQuestData에서 제거
-    setCustomQuestData(prev => {
-      const newData = { ...prev };
-      delete newData[questId];
-      return newData;
-    });
+    if (questId.startsWith('custom_')) {
+      // 커스텀 퀘스트: customQuestData에서 완전히 제거
+      setCustomQuestData(prev => {
+        const newData = { ...prev };
+        delete newData[questId];
+        return newData;
+      });
+    } else {
+      // 기본 퀘스트: hidden으로 마킹
+      setCustomQuestData(prev => ({
+        ...prev,
+        [questId]: {
+          ...prev[questId],
+          hidden: true
+        }
+      }));
+    }
+
     // 완료 목록에서도 제거
     setCompleted(prev => prev.filter(id => id !== questId));
     // customFilters에서도 제거
@@ -130,16 +142,20 @@ function App() {
   const handleAddQuest = (actId) => {
     // 새 퀘스트 ID 생성 (타임스탬프 기반)
     const newQuestId = `custom_${actId}_${Date.now()}`;
+
+    // 현재 필터에 맞게 filters 설정
+    const filters = {
+      regular: filter === 'regular',
+      semiStrict: filter === 'semiStrict',
+      uber: filter === 'uber'
+    };
+
     const newQuest = {
       id: newQuestId,
       name: '새 퀘스트',
       reward: '',
       note: '',
-      filters: {
-        regular: false,
-        semiStrict: false,
-        uber: false
-      }
+      filters
     };
 
     // customQuestData에 추가
@@ -215,19 +231,24 @@ function App() {
     return {
       ...questsData,
       acts: questsData.acts.map(act => {
-        // 기존 퀘스트 병합
-        const mergedQuests = act.quests.map(quest => {
-          const customData = customQuestData[quest.id];
-          if (customData) {
-            return {
-              ...quest,
-              name: customData.name || quest.name,
-              reward: customData.reward || quest.reward,
-              note: customData.note || quest.note
-            };
-          }
-          return quest;
-        });
+        // 기존 퀘스트 병합 (hidden 제외)
+        const mergedQuests = act.quests
+          .filter(quest => {
+            const customData = customQuestData[quest.id];
+            return !customData?.hidden; // hidden이 true면 제외
+          })
+          .map(quest => {
+            const customData = customQuestData[quest.id];
+            if (customData) {
+              return {
+                ...quest,
+                name: customData.name || quest.name,
+                reward: customData.reward || quest.reward,
+                note: customData.note || quest.note
+              };
+            }
+            return quest;
+          });
 
         // 커스텀 추가된 퀘스트 찾기
         const customAddedQuests = Object.entries(customQuestData)
