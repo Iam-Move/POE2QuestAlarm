@@ -97,15 +97,13 @@ POE2QuestAlarm/
 
 ## 향후 계획
 
-- [ ] Custom 필터 편집 모드
-- [ ] URL 공유 기능 (LZString 압축)
-- [ ] PIP 오버레이 모드 (게임 오버레이)
-- [ ] 퀘스트 검색 기능
-- [ ] JSON 내보내기/가져오기
+- [ ] 타이머
+- [ ] 오류 수정
+
 
 ## 라이선스
 
-ISC
+GNU General Public License v3.0
 
 ## 기여
 
