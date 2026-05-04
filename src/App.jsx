@@ -363,14 +363,30 @@ function App() {
                 </a>
               </p>
             </div>
-            <button
-              onClick={() => setIsGuideOpen(true)}
-              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg transition-all font-body flex items-center gap-2 self-start sm:self-auto shadow-lg hover:shadow-xl hover:scale-105"
-              title="사용 안내 보기"
-            >
-              <span className="text-lg">📖</span>
-              <span>사용 안내</span>
-            </button>
+            <div className="flex items-center gap-2 self-start sm:self-auto">
+              <button
+                onClick={handleExport}
+                className="px-4 py-2 rounded-lg font-body font-semibold transition-all text-sm bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white shadow-lg hover:shadow-xl hover:scale-105"
+                title="현재 진행 상황을 파일로 저장"
+              >
+                백업
+              </button>
+              <label
+                className="px-4 py-2 rounded-lg font-body font-semibold transition-all text-sm bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white shadow-lg hover:shadow-xl hover:scale-105 cursor-pointer"
+                title="백업 파일에서 진행 상황 복원"
+              >
+                복원
+                <input type="file" accept=".json" className="hidden" onChange={handleImport} />
+              </label>
+              <button
+                onClick={() => setIsGuideOpen(true)}
+                className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg transition-all font-body flex items-center gap-2 shadow-lg hover:shadow-xl hover:scale-105"
+                title="사용 안내 보기"
+              >
+                <span className="text-lg">📖</span>
+                <span>사용 안내</span>
+              </button>
+            </div>
           </div>
         </header>
 
@@ -414,20 +430,6 @@ function App() {
             )}
 
             <ShareButton filter={filter} completed={completed} customFilters={customFilters} customQuestData={customQuestData} questOrder={questOrder} />
-            <button
-              onClick={handleExport}
-              className="px-4 py-2 rounded-lg font-body font-semibold transition-all text-sm bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white shadow-lg hover:shadow-xl hover:scale-105"
-              title="현재 진행 상황을 파일로 저장"
-            >
-              백업
-            </button>
-            <label
-              className="px-4 py-2 rounded-lg font-body font-semibold transition-all text-sm bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white shadow-lg hover:shadow-xl hover:scale-105 cursor-pointer"
-              title="백업 파일에서 진행 상황 복원"
-            >
-              복원
-              <input type="file" accept=".json" className="hidden" onChange={handleImport} />
-            </label>
             <button
               onClick={handleReset}
               className="px-4 py-2 rounded-lg font-body font-semibold transition-all text-sm bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white shadow-lg hover:shadow-xl hover:scale-105"
