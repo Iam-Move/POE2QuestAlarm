@@ -133,13 +133,21 @@ function ActGroup({
 
   return (
     <div className={`mb-8 glass-card rounded-lg p-6 ${bgColor}`}>
-      <h2 className="text-2xl font-title font-semibold mb-4 pb-3 border-b"
-          style={{
-            color: 'var(--gold-primary)',
-            borderColor: 'var(--border-glow)'
-          }}>
-        {act.name}
-      </h2>
+      <div className="flex items-center justify-between mb-4 pb-3 border-b" style={{ borderColor: 'var(--border-glow)' }}>
+        <h2 className="text-2xl font-title font-semibold"
+            style={{ color: 'var(--gold-primary)' }}>
+          {act.name}
+        </h2>
+        {isEditMode && (
+          <button
+            onClick={handleAddQuest}
+            className="px-3 py-1.5 bg-green-600/20 hover:bg-green-600/40 text-green-400 rounded border border-green-600/30 transition-colors flex items-center gap-1.5 text-sm"
+          >
+            <span className="text-base">+</span>
+            <span>새 퀘스트 추가</span>
+          </button>
+        )}
+      </div>
 
       <DndContext
         sensors={sensors}
@@ -173,16 +181,6 @@ function ActGroup({
         {/* DragOverlay 제거 - 원본 카드만 표시 */}
       </DndContext>
 
-      {/* 편집 모드에서만 추가 버튼 표시 */}
-      {isEditMode && (
-        <button
-          onClick={handleAddQuest}
-          className="w-full mt-4 px-4 py-3 bg-green-600/20 hover:bg-green-600/40 text-green-400 rounded border border-green-600/30 transition-colors flex items-center justify-center gap-2"
-        >
-          <span className="text-xl">+</span>
-          <span>새 퀘스트 추가</span>
-        </button>
-      )}
     </div>
   );
 }
