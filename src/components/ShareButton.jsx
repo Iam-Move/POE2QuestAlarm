@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import ShareDialog from './ShareDialog';
 
-function ShareButton({ filter, completed, customFilters, customQuestData, questOrder }) {
+function ShareButton({ filter, completed, filterDefs, customFilterSets, customQuestData, questOrder }) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   return (
@@ -18,7 +18,8 @@ function ShareButton({ filter, completed, customFilters, customQuestData, questO
         onClose={() => setIsDialogOpen(false)}
         filter={filter}
         completed={completed}
-        customFilters={customFilters}
+        filterDefs={filterDefs}
+        customFilterSets={customFilterSets}
         customQuestData={customQuestData}
         questOrder={questOrder}
       />

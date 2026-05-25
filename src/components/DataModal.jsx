@@ -1,7 +1,7 @@
 import { useState, useRef } from 'react';
 import { downloadCsvTemplate, exportToCsv, parseCsv } from '../utils/csvQuests';
 
-function DataModal({ isOpen, onClose, actsData, completed, customFilters, onImport }) {
+function DataModal({ isOpen, onClose, actsData, completed, filterDefs, customFilterSets, activeFilter, onImport }) {
   const [step, setStep] = useState('main');
   const [parsedItems, setParsedItems] = useState([]);
   const [parseErrors, setParseErrors] = useState([]);
@@ -39,6 +39,9 @@ function DataModal({ isOpen, onClose, actsData, completed, customFilters, onImpo
     setParseErrors([]);
     onClose();
   };
+
+  const activeDef = filterDefs?.find(f => f.id === activeFilter);
+  const activeFilterName = activeDef?.name || activeFilter;
 
   const renderContent = () => {
     if (step === 'option') {
@@ -131,10 +134,12 @@ function DataModal({ isOpen, onClose, actsData, completed, customFilters, onImpo
             <div className="flex items-center justify-between gap-3">
               <div className="min-w-0">
                 <div className="text-sm font-semibold text-white mb-0.5">CSV 내보내기</div>
-                <div className="text-xs text-gray-400">커스텀 퀘스트를 CSV 파일로 저장합니다. 완료 체크 포함.</div>
+                <div className="text-xs text-gray-400">
+                  현재 필터(<span className="text-yellow-400">{activeFilterName}</span>)의 커스텀 퀘스트를 CSV로 저장합니다.
+                </div>
               </div>
               <button
-                onClick={() => actsData && exportToCsv(actsData, completed, customFilters)}
+                onClick={() => actsData && exportToCsv(actsData, completed, filterDefs, customFilterSets, activeFilter)}
                 className="px-3 py-1.5 text-xs rounded bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-semibold transition-all shrink-0"
               >
                 내보내기
@@ -162,7 +167,7 @@ function DataModal({ isOpen, onClose, actsData, completed, customFilters, onImpo
                 <div className="text-xs text-gray-400">Google Sheets / Excel에서 작성할 수 있는 양식입니다.</div>
               </div>
               <button
-                onClick={downloadCsvTemplate}
+                onClick={() => downloadCsvTemplate(filterDefs)}
                 className="px-3 py-1.5 text-xs rounded bg-gradient-to-r from-gray-600 to-gray-700 hover:from-gray-700 hover:to-gray-800 text-white font-semibold transition-all shrink-0"
               >
                 양식 받기

@@ -1,12 +1,10 @@
 import { useState } from 'react';
 
-// 보상 타입을 파싱하는 함수
 function parseRewardType(reward) {
   if (!reward) return null;
 
   const lowerReward = reward.toLowerCase();
 
-  // 패시브 포인트 (금색)
   if (lowerReward.includes('패시브') ||
       lowerReward.includes('스킬 포인트') ||
       lowerReward.includes('skill point') ||
@@ -18,7 +16,6 @@ function parseRewardType(reward) {
     };
   }
 
-  // 스탯 보너스 (파란색)
   if (lowerReward.includes('저항') ||
       lowerReward.includes('능력치') ||
       lowerReward.includes('스탯') ||
@@ -37,7 +34,6 @@ function parseRewardType(reward) {
     };
   }
 
-  // 아이템/기타 (보라색)
   return {
     type: 'item',
     icon: '🏆',
@@ -50,9 +46,10 @@ function QuestCard({
   isCompleted,
   onToggle,
   isEditMode,
-  currentFilter,
+  currentFilterIsCustom,
+  currentFilterName,
   isCustomEnabled,
-  onToggleCustom,
+  onToggleFilterMembership,
   onUpdateQuest,
   onDeleteQuest,
   isNew
@@ -71,7 +68,6 @@ function QuestCard({
   };
 
   const handleBlur = () => {
-    // 내용이 변경되었으면 자동 저장
     if (
       editedName !== quest.name ||
       editedReward !== (quest.reward || '') ||
@@ -96,22 +92,19 @@ function QuestCard({
       `}
     >
       {isEditMode ? (
-        // 편집 모드: 인라인 편집 스타일
         <div>
-          {/* Custom 필터일 때 반영여부 체크박스 */}
-          {currentFilter === 'custom' && (
+          {currentFilterIsCustom && (
             <label className="flex items-center gap-2 text-xs text-orange-400 cursor-pointer mb-2">
               <input
                 type="checkbox"
                 checked={isCustomEnabled}
-                onChange={() => onToggleCustom(quest.id)}
+                onChange={() => onToggleFilterMembership(quest.id)}
                 className="w-3.5 h-3.5"
               />
-              <span className="font-medium">Custom 반영</span>
+              <span className="font-medium">{currentFilterName} 반영</span>
             </label>
           )}
 
-          {/* 퀘스트 이름 - 인라인 편집 */}
           <input
             type="text"
             value={editedName}
@@ -123,9 +116,7 @@ function QuestCard({
             placeholder="퀘스트 이름을 입력하세요"
           />
 
-          {/* 보상과 메모 - 한 줄에 나란히 */}
           <div className="flex gap-3 mb-1">
-            {/* 보상 입력 */}
             <div className="flex-1">
               <input
                 type="text"
@@ -137,10 +128,8 @@ function QuestCard({
               />
             </div>
 
-            {/* 구분선 */}
             <div className="text-gray-600 text-sm">|</div>
 
-            {/* 메모 입력 */}
             <div className="flex-1">
               <input
                 type="text"
@@ -153,7 +142,6 @@ function QuestCard({
             </div>
           </div>
 
-          {/* 삭제 버튼 - 작고 우측 하단 */}
           <div className="flex justify-end mt-1">
             <button
               onClick={handleDelete}
@@ -164,7 +152,6 @@ function QuestCard({
           </div>
         </div>
       ) : (
-        // 일반 모드: 체크박스와 읽기 전용 표시
         <div className="flex items-start gap-3">
           <input
             type="checkbox"

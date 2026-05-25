@@ -1,5 +1,4 @@
-function SharedSettingsAlert({ title, description, onAccept, onCancel }) {
-  // URL에 링크가 있는지 확인
+function SharedSettingsAlert({ title, description, onReplace, onMerge, onCancel }) {
   const urlRegex = /(https?:\/\/[^\s]+)/g;
   const hasLink = description && urlRegex.test(description);
 
@@ -42,16 +41,30 @@ function SharedSettingsAlert({ title, description, onAccept, onCancel }) {
 
         {renderDescription()}
 
-        <div className="mt-6 flex gap-3">
-          <button
-            onClick={onAccept}
-            className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 rounded transition-colors"
-          >
-            설정 불러오기
-          </button>
+        <p className="text-xs text-gray-400 mt-3 mb-6">
+          <span className="text-yellow-400 font-semibold">교체하기</span>: 현재 설정 전체를 공유된 설정으로 덮어씁니다.
+          <br />
+          <span className="text-green-400 font-semibold">합치기</span>: 공유된 커스텀 필터와 퀘스트만 내 설정에 추가합니다.
+        </p>
+
+        <div className="flex flex-col gap-2">
+          <div className="flex gap-2">
+            <button
+              onClick={onMerge}
+              className="flex-1 bg-green-600 hover:bg-green-700 text-white font-medium py-2 rounded transition-colors"
+            >
+              합치기
+            </button>
+            <button
+              onClick={onReplace}
+              className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 rounded transition-colors"
+            >
+              교체하기
+            </button>
+          </div>
           <button
             onClick={onCancel}
-            className="flex-1 bg-gray-600 hover:bg-gray-700 text-white font-medium py-2 rounded transition-colors"
+            className="w-full bg-gray-600 hover:bg-gray-700 text-white font-medium py-2 rounded transition-colors"
           >
             취소
           </button>

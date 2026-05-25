@@ -1,14 +1,15 @@
-// localStorage 관리 유틸리티
+import { DEFAULT_FILTER_DEFS } from './filters';
 
 const STORAGE_KEY = 'poe2-quest-tracker';
 
 export function saveState(state) {
   try {
     const data = {
-      version: '1.0.0',
+      version: '2.0.0',
       filter: state.filter,
       completed: state.completed,
-      customFilters: state.customFilters || {},
+      filterDefs: state.filterDefs,
+      customFilterSets: state.customFilterSets || {},
       customQuestData: state.customQuestData || {},
       questOrder: state.questOrder || {}
     };
@@ -24,10 +25,18 @@ export function loadState() {
     if (!saved) return null;
 
     const data = JSON.parse(saved);
+
+    // Migration: v1 customFilters → customFilterSets
+    let customFilterSets = data.customFilterSets || {};
+    if (data.customFilters && !data.customFilterSets) {
+      customFilterSets = { custom: data.customFilters };
+    }
+
     return {
       filter: data.filter || 'regular',
       completed: data.completed || [],
-      customFilters: data.customFilters || {},
+      filterDefs: data.filterDefs || DEFAULT_FILTER_DEFS,
+      customFilterSets,
       customQuestData: data.customQuestData || {},
       questOrder: data.questOrder || {}
     };
@@ -43,46 +52,4 @@ export function clearState() {
   } catch (error) {
     console.error('Failed to clear state:', error);
   }
-}
-
-export function exportState(state) {
-  const data = {
-    version: '1.0.0',
-    exportedAt: new Date().toISOString(),
-    filter: state.filter,
-    completed: state.completed,
-    customFilters: state.customFilters || {},
-    customQuestData: state.customQuestData || {},
-    questOrder: state.questOrder || {}
-  };
-  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  const date = new Date().toISOString().slice(0, 10);
-  a.href = url;
-  a.download = `poe2-backup-${date}.json`;
-  a.click();
-  URL.revokeObjectURL(url);
-}
-
-export function importState(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      try {
-        const data = JSON.parse(e.target.result);
-        resolve({
-          filter: data.filter || 'regular',
-          completed: data.completed || [],
-          customFilters: data.customFilters || {},
-          customQuestData: data.customQuestData || {},
-          questOrder: data.questOrder || {}
-        });
-      } catch {
-        reject(new Error('올바른 백업 파일이 아닙니다.'));
-      }
-    };
-    reader.onerror = () => reject(new Error('파일을 읽을 수 없습니다.'));
-    reader.readAsText(file);
-  });
 }

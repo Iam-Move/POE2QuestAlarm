@@ -8,16 +8,17 @@ import PIPOverlay from './components/PIPOverlay';
 import GuideModal from './components/GuideModal';
 import DataModal from './components/DataModal';
 import Logo from './components/Logo';
-import { filterQuests, FILTER_MODES } from './utils/filters';
+import { filterQuests, DEFAULT_FILTER_DEFS } from './utils/filters';
 import { saveState, loadState, clearState } from './utils/storage';
 import { decodeStateFromUrl } from './utils/share';
-import { openPipWindow, closePipWindow, isPipSupported, isPipWindowOpen, getPipWindow } from './utils/pip';
+import { openPipWindow, closePipWindow, isPipSupported, isPipWindowOpen } from './utils/pip';
 
 function App() {
   const [questsData, setQuestsData] = useState(null);
-  const [filter, setFilter] = useState(FILTER_MODES.REGULAR);
+  const [filter, setFilter] = useState('regular');
   const [completed, setCompleted] = useState([]);
-  const [customFilters, setCustomFilters] = useState({});
+  const [filterDefs, setFilterDefs] = useState(DEFAULT_FILTER_DEFS);
+  const [customFilterSets, setCustomFilterSets] = useState({});
   const [customQuestData, setCustomQuestData] = useState({});
   const [questOrder, setQuestOrder] = useState({});
   const [isEditMode, setIsEditMode] = useState(false);
@@ -30,27 +31,23 @@ function App() {
   const [isDataModalOpen, setIsDataModalOpen] = useState(false);
   const [newlyAddedQuestId, setNewlyAddedQuestId] = useState(null);
 
-  // 초기 데이터 로드
   useEffect(() => {
-    // URL 해시에서 공유된 상태 확인
     const sharedState = decodeStateFromUrl(window.location.hash);
 
     if (sharedState) {
-      // 공유된 설정이 있으면 알림 표시
       setSharedSettings(sharedState);
     } else {
-      // localStorage에서 상태 복원
       const savedState = loadState();
       if (savedState) {
         setFilter(savedState.filter);
         setCompleted(savedState.completed);
-        setCustomFilters(savedState.customFilters || {});
+        setFilterDefs(savedState.filterDefs || DEFAULT_FILTER_DEFS);
+        setCustomFilterSets(savedState.customFilterSets || {});
         setCustomQuestData(savedState.customQuestData || {});
         setQuestOrder(savedState.questOrder || {});
       }
     }
 
-    // quests.json 로드
     fetch('/data/quests.json')
       .then(res => {
         if (!res.ok) throw new Error('Failed to load quest data');
@@ -66,31 +63,26 @@ function App() {
       });
   }, []);
 
-  // 상태 변경 시 저장
   useEffect(() => {
     if (!loading) {
-      saveState({ filter, completed, customFilters, customQuestData, questOrder });
+      saveState({ filter, completed, filterDefs, customFilterSets, customQuestData, questOrder });
     }
-  }, [filter, completed, customFilters, customQuestData, questOrder, loading]);
+  }, [filter, completed, filterDefs, customFilterSets, customQuestData, questOrder, loading]);
 
   const handleFilterChange = (newFilter) => {
     setFilter(newFilter);
   };
 
   const handleToggleQuest = (questId) => {
-    setCompleted(prev => {
-      if (prev.includes(questId)) {
-        return prev.filter(id => id !== questId);
-      } else {
-        return [...prev, questId];
-      }
-    });
+    setCompleted(prev =>
+      prev.includes(questId) ? prev.filter(id => id !== questId) : [...prev, questId]
+    );
   };
 
   const handleReset = () => {
     if (window.confirm('모든 진행 상황을 초기화하시겠습니까?')) {
       setCompleted([]);
-      setCustomFilters({});
+      setCustomFilterSets({});
       clearState();
     }
   };
@@ -99,7 +91,7 @@ function App() {
     const validActIds = mergedQuestsData?.acts.map(a => a.id) || [];
     const newCustomQuestData = { ...customQuestData };
     const newQuestOrder = { ...questOrder };
-    const newCustomFilters = { ...customFilters };
+    const newCustomFilterSets = { ...customFilterSets };
     const newCompleted = [...completed];
 
     const byAct = {};
@@ -114,11 +106,19 @@ function App() {
       const currentIds = newQuestOrder[actId] || (currentAct ? currentAct.quests.map(q => q.id) : []);
       const newIds = [...currentIds];
 
-      actItems.forEach(({ quest, isCustomFilter, isCompleted }) => {
+      actItems.forEach(({ quest, customFilterNames, isCompleted: questCompleted }) => {
         newCustomQuestData[quest.id] = quest;
         newIds.push(quest.id);
-        if (isCustomFilter) newCustomFilters[quest.id] = true;
-        if (includeCompleted && isCompleted && !newCompleted.includes(quest.id)) {
+
+        (customFilterNames || []).forEach(name => {
+          const nameLower = name.toLowerCase();
+          const def = filterDefs.find(f => f.type === 'custom' && f.name.toLowerCase() === nameLower);
+          const targetId = def ? def.id : 'custom';
+          if (!newCustomFilterSets[targetId]) newCustomFilterSets[targetId] = {};
+          newCustomFilterSets[targetId][quest.id] = true;
+        });
+
+        if (includeCompleted && questCompleted && !newCompleted.includes(quest.id)) {
           newCompleted.push(quest.id);
         }
       });
@@ -128,20 +128,40 @@ function App() {
 
     setCustomQuestData(newCustomQuestData);
     setQuestOrder(newQuestOrder);
-    setCustomFilters(newCustomFilters);
+    setCustomFilterSets(newCustomFilterSets);
     if (includeCompleted) setCompleted(newCompleted);
   };
 
-  const handleToggleCustomFilter = (questId) => {
-    setCustomFilters(prev => ({
+  const handleToggleFilterMembership = (questId) => {
+    setCustomFilterSets(prev => ({
       ...prev,
-      [questId]: !prev[questId]
+      [filter]: {
+        ...(prev[filter] || {}),
+        [questId]: !(prev[filter] || {})[questId]
+      }
     }));
   };
 
   const handleToggleEditMode = () => {
     setIsEditMode(prev => !prev);
     setNewlyAddedQuestId(null);
+  };
+
+  const handleAddFilter = (name) => {
+    const newId = `cus_${Date.now()}`;
+    setFilterDefs(prev => [...prev, { id: newId, name, type: 'custom', visible: true }]);
+  };
+
+  const handleRenameFilter = (filterId, newName) => {
+    setFilterDefs(prev => prev.map(f => f.id === filterId ? { ...f, name: newName } : f));
+  };
+
+  const handleHideFilter = (filterId) => {
+    setFilterDefs(prev => prev.map(f => f.id === filterId ? { ...f, visible: false } : f));
+    if (filter === filterId) {
+      const fallback = filterDefs.find(f => f.id !== filterId && f.visible !== false);
+      setFilter(fallback ? fallback.id : 'regular');
+    }
   };
 
   const handleUpdateQuest = (questId, updatedData) => {
@@ -153,41 +173,44 @@ function App() {
 
   const handleDeleteQuest = (questId) => {
     if (questId.startsWith('custom_')) {
-      // 커스텀 퀘스트: customQuestData에서 완전히 제거
       setCustomQuestData(prev => {
         const newData = { ...prev };
         delete newData[questId];
         return newData;
       });
     } else {
-      // 기본 퀘스트: hidden으로 마킹
       setCustomQuestData(prev => ({
         ...prev,
-        [questId]: {
-          ...prev[questId],
-          hidden: true
-        }
+        [questId]: { ...(prev[questId] || {}), hidden: true }
       }));
     }
 
-    // 완료 목록에서도 제거
     setCompleted(prev => prev.filter(id => id !== questId));
-    // customFilters에서도 제거
-    setCustomFilters(prev => {
-      const newFilters = { ...prev };
-      delete newFilters[questId];
-      return newFilters;
+
+    setCustomFilterSets(prev => {
+      const newSets = {};
+      Object.entries(prev).forEach(([filterId, set]) => {
+        const newSet = { ...set };
+        delete newSet[questId];
+        newSets[filterId] = newSet;
+      });
+      return newSets;
     });
   };
 
   const handleAddQuest = (actId, insertIndex) => {
     const newQuestId = `custom_${actId}_${Date.now()}`;
 
-    const filters = {
-      regular: filter === 'regular',
-      semiStrict: filter === 'semiStrict',
-      uber: filter === 'uber'
-    };
+    const activeDef = filterDefs.find(f => f.id === filter);
+    const isCustomType = activeDef?.type === 'custom';
+
+    const filters = isCustomType
+      ? { regular: false, semiStrict: false, uber: false }
+      : {
+          regular: filter === 'regular',
+          semiStrict: filter === 'semiStrict',
+          uber: filter === 'uber'
+        };
 
     const newQuest = {
       id: newQuestId,
@@ -200,8 +223,11 @@ function App() {
     setCustomQuestData(prev => ({ ...prev, [newQuestId]: newQuest }));
     setNewlyAddedQuestId(newQuestId);
 
-    if (filter === 'custom') {
-      setCustomFilters(prev => ({ ...prev, [newQuestId]: true }));
+    if (isCustomType) {
+      setCustomFilterSets(prev => ({
+        ...prev,
+        [filter]: { ...(prev[filter] || {}), [newQuestId]: true }
+      }));
     }
 
     if (insertIndex !== undefined) {
@@ -214,29 +240,76 @@ function App() {
   };
 
   const handleReorderQuests = (actId, newQuests) => {
-    // 퀘스트 ID 순서만 저장
-    const questIds = newQuests.map(q => q.id);
     setQuestOrder(prev => ({
       ...prev,
-      [actId]: questIds
+      [actId]: newQuests.map(q => q.id)
     }));
   };
 
-  const handleAcceptSharedSettings = () => {
-    if (sharedSettings) {
-      setFilter(sharedSettings.filter);
-      setCustomFilters(sharedSettings.customFilters || {});
-      setCustomQuestData(sharedSettings.customQuestData || {});
-      setQuestOrder(sharedSettings.questOrder || {});
-      setSharedSettings(null);
-      // URL 해시 제거
-      window.history.replaceState(null, '', window.location.pathname);
-    }
+  const handleReplaceSharedSettings = () => {
+    if (!sharedSettings) return;
+    setFilter(sharedSettings.filter);
+    setFilterDefs(sharedSettings.filterDefs || DEFAULT_FILTER_DEFS);
+    setCustomFilterSets(sharedSettings.customFilterSets || {});
+    setCustomQuestData(sharedSettings.customQuestData || {});
+    setQuestOrder(sharedSettings.questOrder || {});
+    setSharedSettings(null);
+    window.history.replaceState(null, '', window.location.pathname);
+  };
+
+  const handleMergeSharedSettings = () => {
+    if (!sharedSettings) return;
+
+    const sharedCustomDefs = (sharedSettings.filterDefs || DEFAULT_FILTER_DEFS).filter(f => f.type === 'custom');
+    const idRemap = {};
+    const newFilterDefs = [...filterDefs];
+
+    sharedCustomDefs.forEach(def => {
+      const existingById = newFilterDefs.find(d => d.id === def.id);
+      if (!existingById) {
+        newFilterDefs.push({ ...def, visible: true });
+        idRemap[def.id] = def.id;
+      } else if (existingById.name === def.name) {
+        idRemap[def.id] = def.id;
+      } else {
+        const newId = `cus_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`;
+        newFilterDefs.push({ ...def, id: newId, visible: true });
+        idRemap[def.id] = newId;
+      }
+    });
+
+    const newCustomFilterSets = { ...customFilterSets };
+    sharedCustomDefs.forEach(def => {
+      const targetId = idRemap[def.id];
+      if (!targetId) return;
+      const sharedSet = (sharedSettings.customFilterSets || {})[def.id] || {};
+      newCustomFilterSets[targetId] = { ...(newCustomFilterSets[targetId] || {}), ...sharedSet };
+    });
+
+    const newCustomQuestData = { ...customQuestData, ...(sharedSettings.customQuestData || {}) };
+
+    const newQuestOrder = { ...questOrder };
+    Object.entries(sharedSettings.questOrder || {}).forEach(([actId, ids]) => {
+      if (!newQuestOrder[actId]) {
+        newQuestOrder[actId] = ids;
+      } else {
+        const newIds = ids.filter(id => !newQuestOrder[actId].includes(id));
+        if (newIds.length > 0) {
+          newQuestOrder[actId] = [...newQuestOrder[actId], ...newIds];
+        }
+      }
+    });
+
+    setFilterDefs(newFilterDefs);
+    setCustomFilterSets(newCustomFilterSets);
+    setCustomQuestData(newCustomQuestData);
+    setQuestOrder(newQuestOrder);
+    setSharedSettings(null);
+    window.history.replaceState(null, '', window.location.pathname);
   };
 
   const handleCancelSharedSettings = () => {
     setSharedSettings(null);
-    // URL 해시 제거
     window.history.replaceState(null, '', window.location.pathname);
   };
 
@@ -245,38 +318,32 @@ function App() {
       setPipError(null);
 
       if (isPipWindowOpen()) {
-        // PIP 닫기
         closePipWindow();
         setPipWindow(null);
       } else {
-        // PIP 열기
         const newPipWindow = await openPipWindow(450, 380);
         setPipWindow(newPipWindow);
-
-        // PIP 창이 닫힐 때 상태 업데이트
         newPipWindow.addEventListener('pagehide', () => {
           setPipWindow(null);
         });
       }
-    } catch (error) {
-      console.error('PIP 토글 실패:', error);
-      setPipError(error.message);
+    } catch (err) {
+      console.error('PIP 토글 실패:', err);
+      setPipError(err.message);
       setTimeout(() => setPipError(null), 5000);
     }
   };
 
-  // 퀘스트 데이터와 커스텀 데이터 병합
   const getMergedQuestsData = () => {
     if (!questsData) return null;
 
     return {
       ...questsData,
       acts: questsData.acts.map(act => {
-        // 기존 퀘스트 병합 (hidden 제외)
         const mergedQuests = act.quests
           .filter(quest => {
             const customData = customQuestData[quest.id];
-            return !customData?.hidden; // hidden이 true면 제외
+            return !customData?.hidden;
           })
           .map(quest => {
             const customData = customQuestData[quest.id];
@@ -291,9 +358,9 @@ function App() {
             return quest;
           });
 
-        // 커스텀 추가된 퀘스트 찾기
         const customAddedQuests = Object.entries(customQuestData)
-          .filter(([id, data]) => id.startsWith(`custom_${act.id}_`))
+          .filter(([id]) => id.startsWith(`custom_${act.id}_`))
+          .filter(([, data]) => !data.hidden)
           .map(([id, data]) => ({
             id,
             name: data.name,
@@ -304,12 +371,10 @@ function App() {
 
         let allQuests = [...mergedQuests, ...customAddedQuests];
 
-        // 저장된 순서가 있으면 적용
         if (questOrder[act.id]) {
           const orderedQuests = [];
           const questMap = new Map(allQuests.map(q => [q.id, q]));
 
-          // 저장된 순서대로 배치
           questOrder[act.id].forEach(id => {
             if (questMap.has(id)) {
               orderedQuests.push(questMap.get(id));
@@ -317,25 +382,25 @@ function App() {
             }
           });
 
-          // 순서에 없는 새로운 퀘스트는 뒤에 추가
           questMap.forEach(quest => orderedQuests.push(quest));
-
           allQuests = orderedQuests;
         }
 
-        return {
-          ...act,
-          quests: allQuests
-        };
+        return { ...act, quests: allQuests };
       })
     };
   };
 
-  // 필터링된 퀘스트 계산
   const mergedQuestsData = getMergedQuestsData();
-  const filteredActs = mergedQuestsData ? filterQuests(mergedQuestsData, filter, customFilters, isEditMode) : [];
+  const filteredActs = mergedQuestsData
+    ? filterQuests(mergedQuestsData, filter, filterDefs, customFilterSets, isEditMode)
+    : [];
 
-  // 전체 진행률 계산
+  const activeDef = filterDefs.find(f => f.id === filter);
+  const activeFilterIsCustom = activeDef?.type === 'custom';
+  const activeFilterName = activeDef?.name || filter;
+  const activeCustomFilterSet = customFilterSets[filter] || {};
+
   const totalQuests = filteredActs.reduce((sum, act) => sum + act.quests.length, 0);
   const completedQuests = filteredActs.reduce(
     (sum, act) => sum + act.quests.filter(q => completed.includes(q.id)).length,
@@ -361,7 +426,6 @@ function App() {
 
   return (
     <>
-      {/* Ambient Background */}
       <div className="ambient-background" />
 
       <div className="min-h-screen py-6 px-4 relative">
@@ -404,7 +468,6 @@ function App() {
           </div>
         </header>
 
-        {/* Progress Bar */}
         <div className="mb-6">
           <div className="flex justify-between items-center mb-2">
             <span className="text-sm font-body" style={{ color: 'var(--text-secondary)' }}>전체 진행률</span>
@@ -421,7 +484,15 @@ function App() {
         </div>
 
         <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <FilterBar currentFilter={filter} onFilterChange={handleFilterChange} />
+          <FilterBar
+            filterDefs={filterDefs}
+            activeFilter={filter}
+            onFilterChange={handleFilterChange}
+            isEditMode={isEditMode}
+            onRenameFilter={handleRenameFilter}
+            onHideFilter={handleHideFilter}
+            onAddFilter={handleAddFilter}
+          />
 
           <div className="flex flex-wrap items-center gap-3">
             <EditModeToggle
@@ -443,7 +514,14 @@ function App() {
               </button>
             )}
 
-            <ShareButton filter={filter} completed={completed} customFilters={customFilters} customQuestData={customQuestData} questOrder={questOrder} />
+            <ShareButton
+              filter={filter}
+              completed={completed}
+              filterDefs={filterDefs}
+              customFilterSets={customFilterSets}
+              customQuestData={customQuestData}
+              questOrder={questOrder}
+            />
             <button
               onClick={handleReset}
               className="px-4 py-2 rounded-lg font-body font-semibold transition-all text-sm bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white shadow-lg hover:shadow-xl hover:scale-105"
@@ -472,9 +550,10 @@ function App() {
                 completed={completed}
                 onToggle={handleToggleQuest}
                 isEditMode={isEditMode}
-                currentFilter={filter}
-                customFilters={customFilters}
-                onToggleCustom={handleToggleCustomFilter}
+                currentFilterIsCustom={activeFilterIsCustom}
+                currentFilterName={activeFilterName}
+                customFilterSet={activeCustomFilterSet}
+                onToggleFilterMembership={handleToggleFilterMembership}
                 onUpdateQuest={handleUpdateQuest}
                 onDeleteQuest={handleDeleteQuest}
                 onAddQuest={handleAddQuest}
@@ -485,7 +564,6 @@ function App() {
           )}
         </main>
 
-        {/* PIP 오버레이 */}
         {pipWindow && (
           <PIPOverlay
             pipWindow={pipWindow}
@@ -496,27 +574,27 @@ function App() {
           />
         )}
 
-        {/* 공유된 설정 알림 */}
         {sharedSettings && (
           <SharedSettingsAlert
             title={sharedSettings.title}
             description={sharedSettings.description}
-            onAccept={handleAcceptSharedSettings}
+            onReplace={handleReplaceSharedSettings}
+            onMerge={handleMergeSharedSettings}
             onCancel={handleCancelSharedSettings}
           />
         )}
 
-        {/* 데이터 관리 모달 */}
         <DataModal
           isOpen={isDataModalOpen}
           onClose={() => setIsDataModalOpen(false)}
           actsData={mergedQuestsData}
           completed={completed}
-          customFilters={customFilters}
+          filterDefs={filterDefs}
+          customFilterSets={customFilterSets}
+          activeFilter={filter}
           onImport={handleCsvImport}
         />
 
-        {/* 사용 안내 모달 */}
         <GuideModal
           isOpen={isGuideOpen}
           onClose={() => setIsGuideOpen(false)}

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { generateShareUrl } from '../utils/share';
 
-function ShareDialog({ isOpen, onClose, filter, completed, customFilters, customQuestData, questOrder }) {
+function ShareDialog({ isOpen, onClose, filter, completed, filterDefs, customFilterSets, customQuestData, questOrder }) {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [shareUrl, setShareUrl] = useState('');
@@ -13,7 +13,8 @@ function ShareDialog({ isOpen, onClose, filter, completed, customFilters, custom
     const state = {
       filter,
       completed,
-      customFilters,
+      filterDefs,
+      customFilterSets,
       customQuestData,
       questOrder,
       title: title.trim(),

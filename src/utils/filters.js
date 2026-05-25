@@ -1,46 +1,27 @@
-// 필터링 로직
+export const DEFAULT_FILTER_DEFS = [
+  { id: 'regular',    name: 'Regular',    type: 'builtin', visible: true },
+  { id: 'semiStrict', name: 'Semi-Strict', type: 'builtin', visible: true },
+  { id: 'uber',       name: 'Uber',       type: 'builtin', visible: true },
+  { id: 'custom',     name: 'Custom',     type: 'custom',  visible: true },
+];
 
-export function filterQuests(questsData, filterMode, customFilters = {}, isEditMode = false) {
+export function filterQuests(questsData, activeFilter, filterDefs, customFilterSets, isEditMode = false) {
   if (!questsData || !questsData.acts) return [];
+
+  const activeDef = filterDefs.find(f => f.id === activeFilter);
+  const isCustomType = activeDef?.type === 'custom';
+  const activeCustomSet = isCustomType ? (customFilterSets[activeFilter] || {}) : {};
 
   return questsData.acts
     .map(act => ({
       ...act,
       quests: act.quests.filter(quest => {
-        // 편집 모드 + Custom 필터: 모든 퀘스트 표시
-        if (isEditMode && filterMode === 'custom') {
-          return true;
+        if (isCustomType) {
+          if (isEditMode) return true;
+          return activeCustomSet[quest.id] === true;
         }
-
-        // 편집 모드 OFF + Custom 필터: customFilters에 true인 것만
-        if (!isEditMode && filterMode === 'custom') {
-          return customFilters[quest.id] === true;
-        }
-
-        // 다른 필터 모드는 기본 filters 사용
-        return quest.filters && quest.filters[filterMode];
+        return quest.filters && quest.filters[activeFilter];
       })
     }))
-    .filter(act => act.quests.length > 0); // 퀘스트가 없는 Act는 제외
+    .filter(act => act.quests.length > 0);
 }
-
-export const FILTER_MODES = {
-  REGULAR: 'regular',
-  SEMI_STRICT: 'semiStrict',
-  UBER: 'uber',
-  CUSTOM: 'custom'
-};
-
-export const FILTER_LABELS = {
-  regular: 'Regular',
-  semiStrict: 'Semi-Strict',
-  uber: 'Uber',
-  custom: 'Custom'
-};
-
-export const FILTER_COLORS = {
-  regular: 'bg-poe-regular',
-  semiStrict: 'bg-poe-semi',
-  uber: 'bg-poe-uber',
-  custom: 'bg-blue-500'
-};

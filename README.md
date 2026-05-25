@@ -4,12 +4,14 @@ Path of Exile 2 플레이어를 위한 무료 웹 기반 퀘스트 네비게이�
 
 ## 특징
 
-- ✅ **필터 시스템**: Regular, Semi-Strict, Uber Strict 모드
+- ✅ **동적 필터 시스템**: Regular, Semi-Strict, Uber + 사용자 정의 필터 추가/이름 변경/숨기기
 - 📊 **진행률 추적**: Act별 및 전체 완료율 표시
 - 💾 **자동 저장**: localStorage를 통한 진행 상황 저장
 - 🎨 **다크 테마**: POE2 스타일의 UI/UX
 - 📱 **반응형 디자인**: 모바일, 태블릿, 데스크톱 지원
 - 🚀 **빠른 로딩**: 정적 JSON 기반, 서버리스 아키텍처
+- 🔗 **공유 링크**: 필터/퀘스트 설정을 URL로 공유 — 교체하기 또는 합치기 선택
+- 📋 **CSV 관리**: 현재 필터 기준 내보내기, Google Sheets 양식 제공
 
 ## 기술 스택
 
@@ -17,6 +19,7 @@ Path of Exile 2 플레이어를 위한 무료 웹 기반 퀘스트 네비게이�
 - Vite
 - Tailwind CSS
 - LZ-String (압축)
+- @dnd-kit (드래그 앤 드롭)
 
 ## 로컬 실행
 
@@ -51,15 +54,21 @@ npm run preview
 POE2QuestAlarm/
 ├── public/
 │   └── data/
-│       └── quests.json          # 퀘스트 데이터
+│       ├── quests.json          # 퀘스트 데이터
+│       └── Practice.md          # 사용 안내 문서
 ├── src/
 │   ├── components/              # React 컴포넌트
-│   │   ├── FilterBar.jsx        # 필터 선택 UI
+│   │   ├── FilterBar.jsx        # 동적 필터 탭 UI
 │   │   ├── ActGroup.jsx         # Act별 그룹
-│   │   └── QuestCard.jsx        # 퀘스트 카드
+│   │   ├── QuestCard.jsx        # 퀘스트 카드
+│   │   ├── SharedSettingsAlert.jsx # 공유 설정 알림 (교체/합치기)
+│   │   ├── ShareButton.jsx      # 공유 버튼
+│   │   └── DataModal.jsx        # CSV 데이터 관리 모달
 │   ├── utils/                   # 유틸리티 함수
 │   │   ├── storage.js           # localStorage 관리
-│   │   └── filters.js           # 필터링 로직
+│   │   ├── filters.js           # 필터링 로직 + 기본 필터 정의
+│   │   ├── share.js             # URL 공유 인코딩/디코딩
+│   │   └── csvQuests.js         # CSV 내보내기/가져오기
 │   ├── App.jsx                  # 메인 앱
 │   ├── main.jsx                 # 엔트리 포인트
 │   └── index.css                # 스타일
@@ -68,7 +77,7 @@ POE2QuestAlarm/
 
 ## 데이터 구조
 
-`public/data/quests.json` 파일은 다음 형식을 따릅니다:
+### quests.json
 
 ```json
 {
@@ -95,13 +104,26 @@ POE2QuestAlarm/
 }
 ```
 
-## 향후 계획
+### localStorage 상태 (v2)
 
-- [ ] Custom 필터 편집 모드
-- [ ] URL 공유 기능 (LZString 압축)
-- [ ] PIP 오버레이 모드 (게임 오버레이)
-- [ ] 퀘스트 검색 기능
-- [ ] JSON 내보내기/가져오기
+```json
+{
+  "version": "2.0.0",
+  "filter": "regular",
+  "filterDefs": [
+    { "id": "regular",    "name": "Regular",    "type": "builtin", "visible": true },
+    { "id": "semiStrict", "name": "Semi-Strict", "type": "builtin", "visible": true },
+    { "id": "uber",       "name": "Uber",       "type": "builtin", "visible": true },
+    { "id": "custom",     "name": "Custom",     "type": "custom",  "visible": true }
+  ],
+  "customFilterSets": {
+    "custom": { "questId": true }
+  },
+  "customQuestData": {},
+  "questOrder": {},
+  "completed": []
+}
+```
 
 ## 라이선스
 

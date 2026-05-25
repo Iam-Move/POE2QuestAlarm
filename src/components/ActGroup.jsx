@@ -91,9 +91,10 @@ function ActGroup({
   completed,
   onToggle,
   isEditMode,
-  currentFilter,
-  customFilters,
-  onToggleCustom,
+  currentFilterIsCustom,
+  currentFilterName,
+  customFilterSet,
+  onToggleFilterMembership,
   onUpdateQuest,
   onDeleteQuest,
   onAddQuest,
@@ -167,9 +168,10 @@ function ActGroup({
                   isCompleted={completed.includes(quest.id)}
                   onToggle={onToggle}
                   isEditMode={isEditMode}
-                  currentFilter={currentFilter}
-                  isCustomEnabled={customFilters[quest.id] === true}
-                  onToggleCustom={onToggleCustom}
+                  currentFilterIsCustom={currentFilterIsCustom}
+                  currentFilterName={currentFilterName}
+                  isCustomEnabled={customFilterSet[quest.id] === true}
+                  onToggleFilterMembership={onToggleFilterMembership}
                   onUpdateQuest={onUpdateQuest}
                   onDeleteQuest={onDeleteQuest}
                   isNew={quest.id === newlyAddedQuestId}
