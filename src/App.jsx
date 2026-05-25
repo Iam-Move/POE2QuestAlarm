@@ -282,17 +282,6 @@ function App() {
     }));
   };
 
-  const handleReplaceSharedSettings = () => {
-    if (!sharedSettings) return;
-    setFilter(sharedSettings.filter);
-    setFilterDefs(sharedSettings.filterDefs || DEFAULT_FILTER_DEFS);
-    setCustomFilterSets(sharedSettings.customFilterSets || {});
-    setCustomQuestData(sharedSettings.customQuestData || {});
-    setQuestOrder(sharedSettings.questOrder || {});
-    setSharedSettings(null);
-    window.history.replaceState(null, '', window.location.pathname);
-  };
-
   const handleMergeSharedSettings = () => {
     if (!sharedSettings) return;
 
@@ -615,7 +604,6 @@ function App() {
           <SharedSettingsAlert
             title={sharedSettings.title}
             description={sharedSettings.description}
-            onReplace={handleReplaceSharedSettings}
             onMerge={handleMergeSharedSettings}
             onCancel={handleCancelSharedSettings}
           />
