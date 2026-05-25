@@ -299,7 +299,7 @@ function App() {
             name: data.name,
             reward: data.reward,
             note: data.note,
-            filters: data.filters || { regular: false, semiStrict: false, uber: false }
+            filters: data.filters || { regular: true, semiStrict: false, uber: false }
           }));
 
         let allQuests = [...mergedQuests, ...customAddedQuests];
