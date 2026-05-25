@@ -54,7 +54,8 @@ function QuestCard({
   isCustomEnabled,
   onToggleCustom,
   onUpdateQuest,
-  onDeleteQuest
+  onDeleteQuest,
+  isNew
 }) {
   const [editedName, setEditedName] = useState(quest.name);
   const [editedReward, setEditedReward] = useState(quest.reward || '');
@@ -62,6 +63,7 @@ function QuestCard({
 
   const handleSave = () => {
     onUpdateQuest(quest.id, {
+      ...quest,
       name: editedName,
       reward: editedReward,
       note: editedNote
@@ -115,6 +117,8 @@ function QuestCard({
             value={editedName}
             onChange={(e) => setEditedName(e.target.value)}
             onBlur={handleBlur}
+            onFocus={(e) => isNew && e.target.select()}
+            autoFocus={isNew}
             className="w-full text-base font-medium bg-transparent border-0 border-b border-transparent hover:border-gray-600 focus:border-yellow-500 focus:outline-none transition-colors px-0 py-1 mb-2"
             placeholder="퀘스트 이름을 입력하세요"
           />

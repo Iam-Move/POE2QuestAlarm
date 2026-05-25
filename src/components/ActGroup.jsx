@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { Fragment, useState } from 'react';
 import {
   DndContext,
   closestCenter,
@@ -6,7 +6,6 @@ import {
   PointerSensor,
   useSensor,
   useSensors,
-  DragOverlay,
 } from '@dnd-kit/core';
 import {
   arrayMove,
@@ -18,7 +17,6 @@ import {
 import { CSS } from '@dnd-kit/utilities';
 import QuestCard from './QuestCard';
 
-// Act별 배경색 매핑
 const ACT_COLORS = {
   'act1': 'bg-poe-act1',
   'act2': 'bg-poe-act2',
@@ -27,7 +25,21 @@ const ACT_COLORS = {
   'default': 'bg-poe-actExtra'
 };
 
-// 드래그 가능한 퀘스트 카드 래퍼
+function InsertDivider({ onInsert }) {
+  return (
+    <div
+      className="flex items-center cursor-pointer group py-0.5 hover:py-1 transition-all"
+      onClick={onInsert}
+    >
+      <div className="h-px flex-1 bg-gray-700/20 group-hover:bg-green-500/50 transition-colors" />
+      <span className="mx-2 text-xs text-green-400 opacity-0 group-hover:opacity-100 transition-opacity bg-gray-900 border border-green-600/30 rounded px-2 py-0.5 select-none whitespace-nowrap">
+        + 여기에 추가
+      </span>
+      <div className="h-px flex-1 bg-gray-700/20 group-hover:bg-green-500/50 transition-colors" />
+    </div>
+  );
+}
+
 function SortableQuestCard({ quest, isEditMode, ...props }) {
   const {
     attributes,
@@ -85,7 +97,8 @@ function ActGroup({
   onUpdateQuest,
   onDeleteQuest,
   onAddQuest,
-  onReorderQuests
+  onReorderQuests,
+  newlyAddedQuestId
 }) {
   const [activeId, setActiveId] = useState(null);
 
@@ -100,12 +113,7 @@ function ActGroup({
     })
   );
 
-  // Act ID에 따라 배경색 결정
   const bgColor = ACT_COLORS[act.id] || ACT_COLORS.default;
-
-  const handleAddQuest = () => {
-    onAddQuest(act.id);
-  };
 
   const handleDragStart = (event) => {
     setActiveId(event.active.id);
@@ -117,7 +125,6 @@ function ActGroup({
     if (over && active.id !== over.id) {
       const oldIndex = act.quests.findIndex((q) => q.id === active.id);
       const newIndex = act.quests.findIndex((q) => q.id === over.id);
-
       const newQuests = arrayMove(act.quests, oldIndex, newIndex);
       onReorderQuests(act.id, newQuests);
     }
@@ -129,24 +136,13 @@ function ActGroup({
     setActiveId(null);
   };
 
-  const activeQuest = activeId ? act.quests.find((q) => q.id === activeId) : null;
-
   return (
     <div className={`mb-8 glass-card rounded-lg p-6 ${bgColor}`}>
-      <div className="flex items-center justify-between mb-4 pb-3 border-b" style={{ borderColor: 'var(--border-glow)' }}>
+      <div className="mb-4 pb-3 border-b" style={{ borderColor: 'var(--border-glow)' }}>
         <h2 className="text-2xl font-title font-semibold"
             style={{ color: 'var(--gold-primary)' }}>
           {act.name}
         </h2>
-        {isEditMode && (
-          <button
-            onClick={handleAddQuest}
-            className="px-3 py-1.5 bg-green-600/20 hover:bg-green-600/40 text-green-400 rounded border border-green-600/30 transition-colors flex items-center gap-1.5 text-sm"
-          >
-            <span className="text-base">+</span>
-            <span>새 퀘스트 추가</span>
-          </button>
-        )}
       </div>
 
       <DndContext
@@ -161,26 +157,31 @@ function ActGroup({
           strategy={verticalListSortingStrategy}
         >
           <div>
-            {act.quests.map((quest) => (
-              <SortableQuestCard
-                key={quest.id}
-                quest={quest}
-                isCompleted={completed.includes(quest.id)}
-                onToggle={onToggle}
-                isEditMode={isEditMode}
-                currentFilter={currentFilter}
-                isCustomEnabled={customFilters[quest.id] === true}
-                onToggleCustom={onToggleCustom}
-                onUpdateQuest={onUpdateQuest}
-                onDeleteQuest={onDeleteQuest}
-              />
+            {isEditMode && (
+              <InsertDivider onInsert={() => onAddQuest(act.id, 0)} />
+            )}
+            {act.quests.map((quest, index) => (
+              <Fragment key={quest.id}>
+                <SortableQuestCard
+                  quest={quest}
+                  isCompleted={completed.includes(quest.id)}
+                  onToggle={onToggle}
+                  isEditMode={isEditMode}
+                  currentFilter={currentFilter}
+                  isCustomEnabled={customFilters[quest.id] === true}
+                  onToggleCustom={onToggleCustom}
+                  onUpdateQuest={onUpdateQuest}
+                  onDeleteQuest={onDeleteQuest}
+                  isNew={quest.id === newlyAddedQuestId}
+                />
+                {isEditMode && (
+                  <InsertDivider onInsert={() => onAddQuest(act.id, index + 1)} />
+                )}
+              </Fragment>
             ))}
           </div>
         </SortableContext>
-
-        {/* DragOverlay 제거 - 원본 카드만 표시 */}
       </DndContext>
-
     </div>
   );
 }

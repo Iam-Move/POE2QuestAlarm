@@ -6,9 +6,10 @@ import EditModeToggle from './components/EditModeToggle';
 import SharedSettingsAlert from './components/SharedSettingsAlert';
 import PIPOverlay from './components/PIPOverlay';
 import GuideModal from './components/GuideModal';
+import DataModal from './components/DataModal';
 import Logo from './components/Logo';
 import { filterQuests, FILTER_MODES } from './utils/filters';
-import { saveState, loadState, clearState, exportState, importState } from './utils/storage';
+import { saveState, loadState, clearState } from './utils/storage';
 import { decodeStateFromUrl } from './utils/share';
 import { openPipWindow, closePipWindow, isPipSupported, isPipWindowOpen, getPipWindow } from './utils/pip';
 
@@ -26,6 +27,8 @@ function App() {
   const [pipError, setPipError] = useState(null);
   const [sharedSettings, setSharedSettings] = useState(null);
   const [isGuideOpen, setIsGuideOpen] = useState(false);
+  const [isDataModalOpen, setIsDataModalOpen] = useState(false);
+  const [newlyAddedQuestId, setNewlyAddedQuestId] = useState(null);
 
   // 초기 데이터 로드
   useEffect(() => {
@@ -92,23 +95,41 @@ function App() {
     }
   };
 
-  const handleExport = () => {
-    exportState({ filter, completed, customFilters, customQuestData, questOrder });
-  };
+  const handleCsvImport = (items, includeCompleted) => {
+    const validActIds = mergedQuestsData?.acts.map(a => a.id) || [];
+    const newCustomQuestData = { ...customQuestData };
+    const newQuestOrder = { ...questOrder };
+    const newCustomFilters = { ...customFilters };
+    const newCompleted = [...completed];
 
-  const handleImport = (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    importState(file)
-      .then(state => {
-        setFilter(state.filter);
-        setCompleted(state.completed);
-        setCustomFilters(state.customFilters);
-        setCustomQuestData(state.customQuestData);
-        setQuestOrder(state.questOrder);
-      })
-      .catch(err => alert(err.message))
-      .finally(() => { e.target.value = ''; });
+    const byAct = {};
+    items.forEach(item => {
+      if (!validActIds.includes(item.actId)) return;
+      if (!byAct[item.actId]) byAct[item.actId] = [];
+      byAct[item.actId].push(item);
+    });
+
+    Object.entries(byAct).forEach(([actId, actItems]) => {
+      const currentAct = mergedQuestsData?.acts.find(a => a.id === actId);
+      const currentIds = newQuestOrder[actId] || (currentAct ? currentAct.quests.map(q => q.id) : []);
+      const newIds = [...currentIds];
+
+      actItems.forEach(({ quest, isCustomFilter, isCompleted }) => {
+        newCustomQuestData[quest.id] = quest;
+        newIds.push(quest.id);
+        if (isCustomFilter) newCustomFilters[quest.id] = true;
+        if (includeCompleted && isCompleted && !newCompleted.includes(quest.id)) {
+          newCompleted.push(quest.id);
+        }
+      });
+
+      newQuestOrder[actId] = newIds;
+    });
+
+    setCustomQuestData(newCustomQuestData);
+    setQuestOrder(newQuestOrder);
+    setCustomFilters(newCustomFilters);
+    if (includeCompleted) setCompleted(newCompleted);
   };
 
   const handleToggleCustomFilter = (questId) => {
@@ -120,6 +141,7 @@ function App() {
 
   const handleToggleEditMode = () => {
     setIsEditMode(prev => !prev);
+    setNewlyAddedQuestId(null);
   };
 
   const handleUpdateQuest = (questId, updatedData) => {
@@ -158,11 +180,9 @@ function App() {
     });
   };
 
-  const handleAddQuest = (actId) => {
-    // 새 퀘스트 ID 생성 (타임스탬프 기반)
+  const handleAddQuest = (actId, insertIndex) => {
     const newQuestId = `custom_${actId}_${Date.now()}`;
 
-    // 현재 필터에 맞게 filters 설정
     const filters = {
       regular: filter === 'regular',
       semiStrict: filter === 'semiStrict',
@@ -177,18 +197,19 @@ function App() {
       filters
     };
 
-    // customQuestData에 추가
-    setCustomQuestData(prev => ({
-      ...prev,
-      [newQuestId]: newQuest
-    }));
+    setCustomQuestData(prev => ({ ...prev, [newQuestId]: newQuest }));
+    setNewlyAddedQuestId(newQuestId);
 
-    // Custom 필터면 자동으로 활성화
     if (filter === 'custom') {
-      setCustomFilters(prev => ({
-        ...prev,
-        [newQuestId]: true
-      }));
+      setCustomFilters(prev => ({ ...prev, [newQuestId]: true }));
+    }
+
+    if (insertIndex !== undefined) {
+      const currentAct = filteredActs.find(a => a.id === actId);
+      const currentIds = currentAct ? currentAct.quests.map(q => q.id) : [];
+      const newOrder = [...currentIds];
+      newOrder.splice(insertIndex, 0, newQuestId);
+      setQuestOrder(prev => ({ ...prev, [actId]: newOrder }));
     }
   };
 
@@ -365,19 +386,12 @@ function App() {
             </div>
             <div className="flex items-center gap-2 self-start sm:self-auto">
               <button
-                onClick={handleExport}
+                onClick={() => setIsDataModalOpen(true)}
                 className="px-4 py-2 rounded-lg font-body font-semibold transition-all text-sm bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white shadow-lg hover:shadow-xl hover:scale-105"
-                title="현재 진행 상황을 파일로 저장"
+                title="CSV 내보내기 / 가져오기"
               >
-                백업
+                데이터
               </button>
-              <label
-                className="px-4 py-2 rounded-lg font-body font-semibold transition-all text-sm bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white shadow-lg hover:shadow-xl hover:scale-105 cursor-pointer"
-                title="백업 파일에서 진행 상황 복원"
-              >
-                복원
-                <input type="file" accept=".json" className="hidden" onChange={handleImport} />
-              </label>
               <button
                 onClick={() => setIsGuideOpen(true)}
                 className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg transition-all font-body flex items-center gap-2 shadow-lg hover:shadow-xl hover:scale-105"
@@ -465,6 +479,7 @@ function App() {
                 onDeleteQuest={handleDeleteQuest}
                 onAddQuest={handleAddQuest}
                 onReorderQuests={handleReorderQuests}
+                newlyAddedQuestId={newlyAddedQuestId}
               />
             ))
           )}
@@ -490,6 +505,16 @@ function App() {
             onCancel={handleCancelSharedSettings}
           />
         )}
+
+        {/* 데이터 관리 모달 */}
+        <DataModal
+          isOpen={isDataModalOpen}
+          onClose={() => setIsDataModalOpen(false)}
+          actsData={mergedQuestsData}
+          completed={completed}
+          customFilters={customFilters}
+          onImport={handleCsvImport}
+        />
 
         {/* 사용 안내 모달 */}
         <GuideModal
