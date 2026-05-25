@@ -6,7 +6,8 @@ function FilterBar({
   onFilterChange,
   isEditMode,
   onRenameFilter,
-  onHideFilter,
+  onToggleFilterVisibility,
+  onDeleteFilter,
   onAddFilter
 }) {
   const [editingId, setEditingId] = useState(null);
@@ -14,7 +15,7 @@ function FilterBar({
   const [isAddingFilter, setIsAddingFilter] = useState(false);
   const [newFilterName, setNewFilterName] = useState('');
 
-  const visibleFilters = filterDefs.filter(f => f.visible !== false);
+  const displayFilters = isEditMode ? filterDefs : filterDefs.filter(f => f.visible !== false);
 
   const startEdit = (def) => {
     setEditingId(def.id);
@@ -40,9 +41,11 @@ function FilterBar({
 
   return (
     <div className="flex flex-wrap gap-2 glass-card p-2 rounded-xl w-fit">
-      {visibleFilters.map(def => {
+      {displayFilters.map(def => {
         const isActive = activeFilter === def.id;
         const isEditing = editingId === def.id;
+        const isHidden = def.visible === false;
+        const isBuiltin = def.type === 'builtin';
 
         return (
           <div key={def.id} className="flex items-center">
@@ -62,34 +65,54 @@ function FilterBar({
             ) : (
               <>
                 <button
-                  onClick={() => onFilterChange(def.id)}
-                  onDoubleClick={() => isEditMode && startEdit(def)}
-                  title={isEditMode ? '더블클릭하여 이름 변경' : undefined}
+                  onClick={() => !isHidden && onFilterChange(def.id)}
+                  onDoubleClick={() => isEditMode && !isHidden && startEdit(def)}
+                  title={isEditMode && !isHidden ? '더블클릭하여 이름 변경' : undefined}
                   className={`
                     px-4 py-2.5 font-body transition-all text-xs sm:text-sm whitespace-nowrap
                     ${isEditMode ? 'rounded-l-2xl' : 'rounded-2xl'}
-                    ${isActive
-                      ? 'bg-gradient-to-r from-yellow-500 to-yellow-600 text-white shadow-xl font-semibold'
-                      : 'bg-black/40 text-gray-400 hover:text-gray-300 hover:bg-black/50 font-medium'
+                    ${isHidden
+                      ? 'bg-black/20 text-gray-600 italic cursor-default'
+                      : isActive
+                        ? 'bg-gradient-to-r from-yellow-500 to-yellow-600 text-white shadow-xl font-semibold'
+                        : 'bg-black/40 text-gray-400 hover:text-gray-300 hover:bg-black/50 font-medium'
                     }
                   `}
                 >
                   {def.name}
                 </button>
                 {isEditMode && (
-                  <button
-                    onClick={() => onHideFilter(def.id)}
-                    title="필터 숨기기"
-                    className={`
-                      px-1.5 py-2.5 rounded-r-2xl font-body transition-all text-sm leading-none
-                      ${isActive
-                        ? 'bg-gradient-to-r from-yellow-500 to-yellow-600 text-yellow-200 hover:text-red-300'
-                        : 'bg-black/40 text-gray-500 hover:text-red-400 hover:bg-black/60'
-                      }
-                    `}
-                  >
-                    ×
-                  </button>
+                  isBuiltin ? (
+                    <button
+                      onClick={() => onToggleFilterVisibility(def.id)}
+                      title={isHidden ? '필터 보이기' : '필터 숨기기'}
+                      className={`
+                        px-1.5 py-2.5 rounded-r-2xl font-body transition-all text-sm leading-none
+                        ${isHidden
+                          ? 'bg-black/20 text-gray-600 hover:text-green-400 hover:bg-black/40'
+                          : isActive
+                            ? 'bg-gradient-to-r from-yellow-500 to-yellow-600 text-yellow-200 hover:text-yellow-100'
+                            : 'bg-black/40 text-gray-500 hover:text-yellow-400 hover:bg-black/60'
+                        }
+                      `}
+                    >
+                      {isHidden ? '+' : '×'}
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => onDeleteFilter(def.id)}
+                      title="필터 삭제"
+                      className={`
+                        px-1.5 py-2.5 rounded-r-2xl font-body transition-all text-sm leading-none
+                        ${isActive
+                          ? 'bg-gradient-to-r from-yellow-500 to-yellow-600 text-yellow-200 hover:text-red-300'
+                          : 'bg-black/40 text-gray-500 hover:text-red-400 hover:bg-black/60'
+                        }
+                      `}
+                    >
+                      ×
+                    </button>
+                  )
                 )}
               </>
             )}

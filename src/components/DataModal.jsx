@@ -135,7 +135,7 @@ function DataModal({ isOpen, onClose, actsData, completed, filterDefs, customFil
               <div className="min-w-0">
                 <div className="text-sm font-semibold text-white mb-0.5">CSV 내보내기</div>
                 <div className="text-xs text-gray-400">
-                  현재 필터(<span className="text-yellow-400">{activeFilterName}</span>)의 커스텀 퀘스트를 CSV로 저장합니다.
+                  현재 필터(<span className="text-yellow-400">{activeFilterName}</span>)의 퀘스트를 CSV로 저장합니다.
                 </div>
               </div>
               <button

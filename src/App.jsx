@@ -93,6 +93,26 @@ function App() {
     const newQuestOrder = { ...questOrder };
     const newCustomFilterSets = { ...customFilterSets };
     const newCompleted = [...completed];
+    let newFilterDefs = [...filterDefs];
+
+    // Pre-collect unique custom filter names and create missing filter tabs
+    const allCustomFilterNames = new Set();
+    items.forEach(item => (item.customFilterNames || []).forEach(n => allCustomFilterNames.add(n)));
+
+    const filterNameToId = {};
+    let createIdx = 0;
+    allCustomFilterNames.forEach(name => {
+      const existing = newFilterDefs.find(
+        f => f.type === 'custom' && f.name.toLowerCase() === name.toLowerCase()
+      );
+      if (existing) {
+        filterNameToId[name] = existing.id;
+      } else {
+        const id = `cus_${Date.now()}_${createIdx++}`;
+        newFilterDefs.push({ id, name, type: 'custom', visible: true });
+        filterNameToId[name] = id;
+      }
+    });
 
     const byAct = {};
     items.forEach(item => {
@@ -111,11 +131,11 @@ function App() {
         newIds.push(quest.id);
 
         (customFilterNames || []).forEach(name => {
-          const nameLower = name.toLowerCase();
-          const def = filterDefs.find(f => f.type === 'custom' && f.name.toLowerCase() === nameLower);
-          const targetId = def ? def.id : 'custom';
-          if (!newCustomFilterSets[targetId]) newCustomFilterSets[targetId] = {};
-          newCustomFilterSets[targetId][quest.id] = true;
+          const targetId = filterNameToId[name];
+          if (targetId) {
+            if (!newCustomFilterSets[targetId]) newCustomFilterSets[targetId] = {};
+            newCustomFilterSets[targetId][quest.id] = true;
+          }
         });
 
         if (includeCompleted && questCompleted && !newCompleted.includes(quest.id)) {
@@ -129,6 +149,7 @@ function App() {
     setCustomQuestData(newCustomQuestData);
     setQuestOrder(newQuestOrder);
     setCustomFilterSets(newCustomFilterSets);
+    setFilterDefs(newFilterDefs);
     if (includeCompleted) setCompleted(newCompleted);
   };
 
@@ -156,11 +177,26 @@ function App() {
     setFilterDefs(prev => prev.map(f => f.id === filterId ? { ...f, name: newName } : f));
   };
 
-  const handleHideFilter = (filterId) => {
-    setFilterDefs(prev => prev.map(f => f.id === filterId ? { ...f, visible: false } : f));
-    if (filter === filterId) {
+  const handleToggleFilterVisibility = (filterId) => {
+    const current = filterDefs.find(f => f.id === filterId);
+    const isCurrentlyVisible = current?.visible !== false;
+    setFilterDefs(prev => prev.map(f => f.id === filterId ? { ...f, visible: !isCurrentlyVisible } : f));
+    if (isCurrentlyVisible && filter === filterId) {
       const fallback = filterDefs.find(f => f.id !== filterId && f.visible !== false);
       setFilter(fallback ? fallback.id : 'regular');
+    }
+  };
+
+  const handleDeleteFilter = (filterId) => {
+    setFilterDefs(prev => prev.filter(f => f.id !== filterId));
+    setCustomFilterSets(prev => {
+      const next = { ...prev };
+      delete next[filterId];
+      return next;
+    });
+    if (filter === filterId) {
+      const fallback = filterDefs.find(f => f.id !== filterId && f.visible !== false);
+      setFilter(fallback?.id || 'regular');
     }
   };
 
@@ -490,7 +526,8 @@ function App() {
             onFilterChange={handleFilterChange}
             isEditMode={isEditMode}
             onRenameFilter={handleRenameFilter}
-            onHideFilter={handleHideFilter}
+            onToggleFilterVisibility={handleToggleFilterVisibility}
+            onDeleteFilter={handleDeleteFilter}
             onAddFilter={handleAddFilter}
           />
 

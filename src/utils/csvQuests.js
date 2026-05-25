@@ -31,9 +31,9 @@ export function downloadCsvTemplate(filterDefs = []) {
   const customFilterDefs = filterDefs.filter(f => f.type === 'custom');
   const customCols = customFilterDefs.length > 0 ? customFilterDefs.map(f => f.name) : ['Custom'];
 
-  const header = ['act', 'name', 'reward', 'note', 'regular', 'semi_strict', 'uber', ...customCols].join(',');
-  const row1 = ['act1', '보석의 굴레', '패시브 포인트', '예시 메모', 'true', 'true', 'false', ...customCols.map(() => 'false')].join(',');
-  const row2 = ['act2', '또 다른 퀘스트', '스킬 젬', '', 'true', 'false', 'false', ...customCols.map(() => 'true')].join(',');
+  const header = ['act', 'Quest', 'Reward', 'Note', ...customCols].join(',');
+  const row1 = ['act1', '보석의 굴레', '패시브 포인트', '예시 메모', ...customCols.map(() => 'true')].join(',');
+  const row2 = ['act2', '또 다른 퀘스트', '스킬 젬', '', ...customCols.map(() => 'false')].join(',');
 
   const blob = new Blob([BOM + [header, row1, row2].join('\n')], { type: 'text/csv;charset=utf-8' });
   const url = URL.createObjectURL(blob);
@@ -53,21 +53,22 @@ export function exportToCsv(actsData, completed, filterDefs, customFilterSets, a
 
   const customFilterDefs = filterDefs.filter(f => f.type === 'custom');
   const header = [
-    'act', 'name', 'reward', 'note', 'regular', 'semi_strict', 'uber',
+    'act', 'Quest', 'Reward', 'Note',
     ...customFilterDefs.map(f => quoteCsv(f.name)),
-    'completed'
+    'Completed'
   ].join(',');
 
   const rows = [header];
 
   actsData.acts.forEach(act => {
     act.quests.forEach(quest => {
-      if (!quest.id.startsWith('custom_')) return;
-
       const f = quest.filters || {};
+
       if (isCustomType) {
+        // Include any quest in the active custom filter set (including JSON quests added via 반영)
         if (!activeCustomSet[quest.id]) return;
       } else {
+        if (!quest.id.startsWith('custom_')) return;
         if (!f[activeFilter]) return;
       }
 
@@ -76,9 +77,6 @@ export function exportToCsv(actsData, completed, filterDefs, customFilterSets, a
         quoteCsv(quest.name),
         quoteCsv(quest.reward),
         quoteCsv(quest.note),
-        f.regular ? 'true' : 'false',
-        f.semiStrict ? 'true' : 'false',
-        f.uber ? 'true' : 'false',
         ...customFilterDefs.map(fd => {
           const set = customFilterSets[fd.id] || {};
           return set[quest.id] ? 'true' : 'false';
@@ -102,18 +100,23 @@ export function parseCsv(csvText) {
   const lines = text.split(/\r?\n/).filter(l => l.trim());
   if (lines.length < 2) return { items: [], errors: ['데이터가 없습니다.'] };
 
-  const headers = parseCsvLine(lines[0]).map(h => h.trim().toLowerCase());
+  const rawHeaders = parseCsvLine(lines[0]);
+  const originalHeaders = rawHeaders.map(h => h.trim());
+
+  // Normalize: strip parenthetical content, lowercase, alias 'quest' → 'name'
+  const headers = originalHeaders.map(h => {
+    const lower = h.toLowerCase().split('(')[0].trim();
+    return lower === 'quest' ? 'name' : lower;
+  });
+
   const col = (name) => headers.indexOf(name);
 
   if (col('act') === -1 || col('name') === -1) {
-    return { items: [], errors: ["필수 컬럼 'act'와 'name'이 필요합니다."] };
+    return { items: [], errors: ["필수 컬럼 'act'와 'name'(또는 'Quest')이 필요합니다."] };
   }
 
-  // Detect custom filter columns (anything not in the known fixed set)
-  // Use original-case names so they can be matched against filter def names
-  const originalHeaders = parseCsvLine(lines[0]).map(h => h.trim());
-  const knownCols = new Set(['act', 'name', 'reward', 'note', 'regular', 'semi_strict', 'uber', 'completed']);
-  const customFilterCols = originalHeaders.filter(h => !knownCols.has(h.toLowerCase()));
+  const knownCols = new Set(['act', 'name', 'quest', 'reward', 'note', 'regular', 'semi_strict', 'uber', 'completed']);
+  const customFilterCols = originalHeaders.filter(h => !knownCols.has(h.toLowerCase().split('(')[0].trim()));
 
   const items = [];
   const errors = [];
@@ -132,10 +135,9 @@ export function parseCsv(csvText) {
     if (!actId) { errors.push(`${i + 2}행: act가 비어있습니다`); return; }
     if (!name) { errors.push(`${i + 2}행: name이 비어있습니다`); return; }
 
-    // Match original-case custom filter column name to values (use lowercased header for lookup)
     const customFilterNames = customFilterCols.filter(originalCol => {
-      const idx = headers.indexOf(originalCol.toLowerCase());
-      return idx >= 0 && (values[idx] ?? '').trim() === 'true';
+      const idx = originalHeaders.indexOf(originalCol);
+      return idx >= 0 && (values[idx] ?? '').trim().toLowerCase() === 'true';
     });
 
     items.push({
@@ -146,13 +148,13 @@ export function parseCsv(csvText) {
         reward: get('reward'),
         note: get('note'),
         filters: {
-          regular: get('regular') !== 'false',
-          semiStrict: get('semi_strict') === 'true',
-          uber: get('uber') === 'true',
+          regular: get('regular').toLowerCase() === 'true',
+          semiStrict: get('semi_strict').toLowerCase() === 'true',
+          uber: get('uber').toLowerCase() === 'true',
         },
       },
       customFilterNames,
-      isCompleted: get('completed') === 'true',
+      isCompleted: get('completed').toLowerCase() === 'true',
     });
   });
 
