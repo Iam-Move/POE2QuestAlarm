@@ -138,7 +138,7 @@ function ActGroup({
   };
 
   return (
-    <div className={`mb-8 glass-card rounded-lg p-6 ${bgColor}`}>
+    <div id={act.id} className={`mb-8 glass-card rounded-lg p-6 ${bgColor}`}>
       <div className="mb-4 pb-3 border-b" style={{ borderColor: 'var(--border-glow)' }}>
         <h2 className="text-2xl font-title font-semibold"
             style={{ color: 'var(--gold-primary)' }}>

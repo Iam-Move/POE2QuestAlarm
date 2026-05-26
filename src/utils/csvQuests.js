@@ -28,12 +28,9 @@ function quoteCsv(value) {
 }
 
 export function downloadCsvTemplate(filterDefs = []) {
-  const customFilterDefs = filterDefs.filter(f => f.type === 'custom');
-  const customCols = customFilterDefs.length > 0 ? customFilterDefs.map(f => f.name) : ['필터명(한/영 변경가능)'];
-
-  const header = ['Act(필수)', 'Quest(필수)', 'Reward(선택)', 'Memo(선택)', ...customCols].join(',');
-  const row1 = ['act1', '보석의 굴레', '패시브 포인트', '예시 메모', ...customCols.map(() => 'true')].join(',');
-  const row2 = ['act2', '또 다른 퀘스트', '스킬 젬', '', ...customCols.map(() => 'false')].join(',');
+  const header = ['Act(필수)', 'Waypoint(필수)', 'Quest(필수)', 'Reward(선택)', 'Memo(선택)', '필터명(수정가능)'].join(',');
+  const row1 = ['act1', '클리어펠 야영지', '보석의 굴레', '패시브 포인트', '예시 메모', 'true'].join(',');
+  const row2 = ['act2', '폭풍 해안', '또 다른 퀘스트', '스킬 젬', '', 'false'].join(',');
 
   const blob = new Blob([BOM + [header, row1, row2].join('\n')], { type: 'text/csv;charset=utf-8' });
   const url = URL.createObjectURL(blob);
@@ -51,11 +48,11 @@ export function exportToCsv(actsData, completed, filterDefs, customFilterSets, a
   const isCustomType = activeDef?.type === 'custom';
   const activeCustomSet = isCustomType ? (customFilterSets[activeFilter] || {}) : {};
 
-  const customFilterDefs = filterDefs.filter(f => f.type === 'custom');
+  const activeFilterCol = isCustomType ? [quoteCsv(activeDef.name)] : [];
   const header = [
-    'Act(필수)', 'Quest(필수)', 'Reward(선택)', 'Memo(선택)',
-    ...customFilterDefs.map(f => quoteCsv(f.name)),
-    '진행도(false=미완료, 공유시 false 권장)'
+    'Act(필수)', 'Waypoint(필수)', 'Quest(필수)', 'Reward(선택)', 'Memo(선택)',
+    ...activeFilterCol,
+    '진행도(false=미완료/공유시 false 권장)'
   ].join(',');
 
   const filterKeyMap = { regular: 'regular', semi_strict: 'semiStrict', uber: 'uber' };
@@ -75,13 +72,11 @@ export function exportToCsv(actsData, completed, filterDefs, customFilterSets, a
 
       rows.push([
         act.id,
+        quoteCsv(quest.waypoint || ''),
         quoteCsv(quest.name),
         quoteCsv(quest.reward),
         quoteCsv(quest.note),
-        ...customFilterDefs.map(fd => {
-          const set = customFilterSets[fd.id] || {};
-          return set[quest.id] ? 'true' : 'false';
-        }),
+        ...(isCustomType ? ['true'] : []),
         completed.includes(quest.id) ? 'true' : 'false',
       ].join(','));
     });
@@ -111,6 +106,7 @@ export function parseCsv(csvText) {
     const lower = h.toLowerCase().split('(')[0].trim();
     if (lower === 'quest') return 'name';
     if (lower === 'memo') return 'note';
+    if (lower === 'location') return 'waypoint';
     if (lower === '진행도') return 'completed';
     return lower;
   };
@@ -123,7 +119,7 @@ export function parseCsv(csvText) {
   }
 
   const knownCols = new Set([
-    'act', 'name', 'quest', 'reward', 'note', 'memo',
+    'act', 'name', 'quest', 'waypoint', 'location', 'reward', 'note', 'memo',
     'regular', 'semi_strict', 'uber', 'completed', '진행도', '필터명'
   ]);
   const customFilterCols = originalHeaders.filter(h => !knownCols.has(normalizeHeader(h)));
@@ -155,6 +151,7 @@ export function parseCsv(csvText) {
       quest: {
         id: `custom_${actId}_${now}_${i}`,
         name,
+        waypoint: get('waypoint'),
         reward: get('reward'),
         note: get('note'),
         filters: {

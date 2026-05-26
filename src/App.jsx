@@ -563,6 +563,20 @@ function App() {
           </div>
         )}
 
+        {filteredActs.length > 0 && (
+          <div className="flex flex-wrap gap-1.5 mb-4">
+            {filteredActs.map(act => (
+              <button
+                key={act.id}
+                onClick={() => document.getElementById(act.id)?.scrollIntoView({ behavior: 'smooth' })}
+                className="px-3 py-1 text-xs rounded-full bg-black/40 text-gray-400 hover:text-yellow-400 hover:bg-black/60 transition-all font-body"
+              >
+                {act.name}
+              </button>
+            ))}
+          </div>
+        )}
+
         <main>
           {filteredActs.length === 0 ? (
             <div className="text-center text-gray-400 py-12">
