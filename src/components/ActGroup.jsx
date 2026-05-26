@@ -139,11 +139,20 @@ function ActGroup({
 
   return (
     <div id={act.id} className={`mb-8 glass-card rounded-lg p-6 ${bgColor}`}>
-      <div className="mb-4 pb-3 border-b" style={{ borderColor: 'var(--border-glow)' }}>
+      <div className="mb-4 pb-3 border-b flex items-center justify-between" style={{ borderColor: 'var(--border-glow)' }}>
         <h2 className="text-2xl font-title font-semibold"
             style={{ color: 'var(--gold-primary)' }}>
           {act.name}
         </h2>
+        <button
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          className="text-yellow-400/50 hover:text-yellow-400 transition-colors p-1"
+          aria-label="맨 위로"
+        >
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+          </svg>
+        </button>
       </div>
 
       <DndContext
