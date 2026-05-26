@@ -651,7 +651,7 @@ function App() {
       {showScrollTop && (
         <button
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-          className="fixed bottom-6 right-6 z-50 p-3 rounded-full bg-black/60 border border-white/10 text-gray-400 hover:text-yellow-400 hover:border-yellow-400/30 hover:bg-black/80 transition-all shadow-lg backdrop-blur-sm"
+          className="fixed bottom-6 right-6 z-50 p-3 rounded-full bg-black/70 border border-yellow-400/30 text-yellow-400/70 hover:text-yellow-400 hover:border-yellow-400/60 hover:bg-black/90 transition-all shadow-lg backdrop-blur-sm"
           aria-label="맨 위로"
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
