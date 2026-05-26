@@ -221,6 +221,18 @@ function PIPOverlay({ pipWindow, acts, completed, onToggle, currentFilter }) {
                         onClick={(e) => e.stopPropagation()}
                       />
                       <div className="flex-1 text-sm">
+                        {quest.waypoint && (
+                          <div
+                            className="text-xs mb-0.5"
+                            style={{
+                              opacity: isCompleted ? 0.6 : 1,
+                              transition: 'all 0.2s ease-out',
+                              color: 'var(--text-secondary)'
+                            }}
+                          >
+                            📍 {quest.waypoint}
+                          </div>
+                        )}
                         <div
                           className="font-medium"
                           style={{

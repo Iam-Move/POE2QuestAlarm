@@ -533,20 +533,6 @@ function App() {
               onToggle={handleToggleEditMode}
             />
 
-            {isPipSupported() && (
-              <button
-                onClick={handleTogglePip}
-                className={`px-4 py-2 rounded-lg font-body font-semibold transition-all text-sm ${
-                  pipWindow
-                    ? 'bg-gradient-to-r from-yellow-600 to-yellow-700 hover:from-yellow-700 hover:to-yellow-800 shadow-lg'
-                    : 'bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 shadow-[0_0_12px_2px_rgba(250,204,21,0.4)] animate-pulse'
-                } text-white hover:shadow-xl hover:scale-105`}
-                title="게임 오버레이 모드"
-              >
-                오버레이
-              </button>
-            )}
-
             <ShareButton
               filter={filter}
               completed={completed}
@@ -555,6 +541,20 @@ function App() {
               customQuestData={customQuestData}
               questOrder={questOrder}
             />
+
+            {isPipSupported() && (
+              <button
+                onClick={handleTogglePip}
+                className={`px-4 py-2 rounded-lg font-body font-semibold transition-all text-sm flex items-center gap-1.5 ${
+                  pipWindow
+                    ? 'bg-gradient-to-r from-yellow-600 to-yellow-700 hover:from-yellow-700 hover:to-yellow-800 shadow-lg'
+                    : 'bg-gradient-to-r from-amber-400 to-yellow-500 hover:from-amber-300 hover:to-yellow-400 shadow-[0_0_14px_3px_rgba(251,191,36,0.5)] animate-pulse'
+                } text-white hover:shadow-xl hover:scale-105`}
+                title="게임 오버레이 모드"
+              >
+                🖥️ 오버레이
+              </button>
+            )}
           </div>
         </div>
 
