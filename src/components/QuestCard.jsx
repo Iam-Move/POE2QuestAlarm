@@ -55,6 +55,7 @@ function QuestCard({
   isNew
 }) {
   const [editedName, setEditedName] = useState(quest.name);
+  const [editedWaypoint, setEditedWaypoint] = useState(quest.waypoint || '');
   const [editedReward, setEditedReward] = useState(quest.reward || '');
   const [editedNote, setEditedNote] = useState(quest.note || '');
 
@@ -62,6 +63,7 @@ function QuestCard({
     onUpdateQuest(quest.id, {
       ...quest,
       name: editedName,
+      waypoint: editedWaypoint,
       reward: editedReward,
       note: editedNote
     });
@@ -70,6 +72,7 @@ function QuestCard({
   const handleBlur = () => {
     if (
       editedName !== quest.name ||
+      editedWaypoint !== (quest.waypoint || '') ||
       editedReward !== (quest.reward || '') ||
       editedNote !== (quest.note || '')
     ) {
@@ -116,6 +119,15 @@ function QuestCard({
             placeholder="퀘스트 이름을 입력하세요"
           />
 
+          <input
+            type="text"
+            value={editedWaypoint}
+            onChange={(e) => setEditedWaypoint(e.target.value)}
+            onBlur={handleBlur}
+            className="w-full text-sm text-gray-500 bg-transparent border-0 border-b border-transparent hover:border-gray-600 focus:border-yellow-500 focus:outline-none transition-colors px-0 py-1 mb-2"
+            placeholder="📍 웨이포인트 위치 (예: 클리어펠 야영지)"
+          />
+
           <div className="flex gap-3 mb-1">
             <div className="flex-1">
               <input
@@ -160,9 +172,12 @@ function QuestCard({
             className="custom-checkbox mt-1"
           />
           <div className="flex-1">
-            <h3 className="text-base font-medium mb-2">
+            <h3 className="text-base font-medium mb-1">
               {quest.name}
             </h3>
+            {quest.waypoint && (
+              <p className="text-xs text-gray-500 mb-2">📍 {quest.waypoint}</p>
+            )}
             {quest.reward && (
               <div className="flex flex-wrap gap-2 mb-2">
                 {quest.reward.split(',').map((reward, index) => {
