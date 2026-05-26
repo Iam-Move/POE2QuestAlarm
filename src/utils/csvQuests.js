@@ -29,9 +29,9 @@ function quoteCsv(value) {
 
 export function downloadCsvTemplate(filterDefs = []) {
   const customFilterDefs = filterDefs.filter(f => f.type === 'custom');
-  const customCols = customFilterDefs.length > 0 ? customFilterDefs.map(f => f.name) : ['Custom'];
+  const customCols = customFilterDefs.length > 0 ? customFilterDefs.map(f => f.name) : ['필터명(한/영 변경가능)'];
 
-  const header = ['act', 'Quest', 'Reward', 'Note', ...customCols].join(',');
+  const header = ['Act(필수)', 'Quest(필수)', 'Reward(선택)', 'Memo(선택)', ...customCols].join(',');
   const row1 = ['act1', '보석의 굴레', '패시브 포인트', '예시 메모', ...customCols.map(() => 'true')].join(',');
   const row2 = ['act2', '또 다른 퀘스트', '스킬 젬', '', ...customCols.map(() => 'false')].join(',');
 
@@ -53,10 +53,12 @@ export function exportToCsv(actsData, completed, filterDefs, customFilterSets, a
 
   const customFilterDefs = filterDefs.filter(f => f.type === 'custom');
   const header = [
-    'act', 'Quest', 'Reward', 'Note',
+    'Act(필수)', 'Quest(필수)', 'Reward(선택)', 'Memo(선택)',
     ...customFilterDefs.map(f => quoteCsv(f.name)),
-    'Completed'
+    '진행도(false=미완료, 공유시 false 권장)'
   ].join(',');
+
+  const filterKeyMap = { regular: 'regular', semi_strict: 'semiStrict', uber: 'uber' };
 
   const rows = [header];
 
@@ -65,11 +67,10 @@ export function exportToCsv(actsData, completed, filterDefs, customFilterSets, a
       const f = quest.filters || {};
 
       if (isCustomType) {
-        // Include any quest in the active custom filter set (including JSON quests added via 반영)
         if (!activeCustomSet[quest.id]) return;
       } else {
-        if (!quest.id.startsWith('custom_')) return;
-        if (!f[activeFilter]) return;
+        const filterKey = filterKeyMap[activeFilter] ?? activeFilter;
+        if (!f[filterKey]) return;
       }
 
       rows.push([
@@ -86,11 +87,14 @@ export function exportToCsv(actsData, completed, filterDefs, customFilterSets, a
     });
   });
 
+  const safeFilterName = (activeDef?.name || activeFilter).replace(/[\\/:*?"<>|]/g, '_');
+  const date = new Date().toISOString().slice(0, 10);
+
   const blob = new Blob([BOM + rows.join('\n')], { type: 'text/csv;charset=utf-8' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = `poe2-quests-${new Date().toISOString().slice(0, 10)}.csv`;
+  a.download = `${safeFilterName}-${date}.csv`;
   a.click();
   URL.revokeObjectURL(url);
 }
@@ -103,20 +107,26 @@ export function parseCsv(csvText) {
   const rawHeaders = parseCsvLine(lines[0]);
   const originalHeaders = rawHeaders.map(h => h.trim());
 
-  // Normalize: strip parenthetical content, lowercase, alias 'quest' → 'name'
-  const headers = originalHeaders.map(h => {
+  const normalizeHeader = (h) => {
     const lower = h.toLowerCase().split('(')[0].trim();
-    return lower === 'quest' ? 'name' : lower;
-  });
+    if (lower === 'quest') return 'name';
+    if (lower === 'memo') return 'note';
+    if (lower === '진행도') return 'completed';
+    return lower;
+  };
+  const headers = originalHeaders.map(normalizeHeader);
 
   const col = (name) => headers.indexOf(name);
 
   if (col('act') === -1 || col('name') === -1) {
-    return { items: [], errors: ["필수 컬럼 'act'와 'name'(또는 'Quest')이 필요합니다."] };
+    return { items: [], errors: ["필수 컬럼 'Act(필수)'와 'Quest(필수)'이 필요합니다."] };
   }
 
-  const knownCols = new Set(['act', 'name', 'quest', 'reward', 'note', 'regular', 'semi_strict', 'uber', 'completed']);
-  const customFilterCols = originalHeaders.filter(h => !knownCols.has(h.toLowerCase().split('(')[0].trim()));
+  const knownCols = new Set([
+    'act', 'name', 'quest', 'reward', 'note', 'memo',
+    'regular', 'semi_strict', 'uber', 'completed', '진행도', '필터명'
+  ]);
+  const customFilterCols = originalHeaders.filter(h => !knownCols.has(normalizeHeader(h)));
 
   const items = [];
   const errors = [];
