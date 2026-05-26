@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "lastUpdated": "2026-02-05",
+  "lastUpdated": "2026-05-26",
   "acts": [
     {
       "id": "act1",
@@ -9,15 +9,10 @@
         {
           "id": "q1",
           "waypoint": "클리어펠 야영지",
-          "name": "클리어펠 야영지(마을) 와서 '렌리'와 대화",
+          "name": "NPC '렌리'와 대화",
           "reward": "스킬 젬",
           "note": "",
-          "filters": {
-            "regular": true,
-            "semiStrict": false,
-            "uber": false,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": false, "uber": false, "custom": false }
         },
         {
           "id": "q2",
@@ -25,51 +20,31 @@
           "name": "썩은 무리의 베이라 처치",
           "reward": "냉기저항 +10%",
           "note": "",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": true,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": true, "uber": true, "custom": false }
         },
         {
           "id": "q3",
           "waypoint": "클리어펠",
-          "name": "수수께끼의 야영지",
+          "name": "수수께끼의 야영지(모닥불 상자)",
           "reward": "미가공 스킬젬(Lv.1)",
           "note": "필수 아님",
-          "filters": {
-            "regular": true,
-            "semiStrict": false,
-            "uber": false,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": false, "uber": false, "custom": false }
         },
         {
           "id": "q4",
           "waypoint": "클리어펠",
-          "name": "진흙토굴",
+          "name": "진흙토굴 들어가서 보스 처치",
           "reward": "미가공 스킬젬(Lv.2)",
           "note": "필수 아님",
-          "filters": {
-            "regular": true,
-            "semiStrict": false,
-            "uber": false,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": false, "uber": false, "custom": false }
         },
         {
           "id": "q5",
           "waypoint": "그렐우드",
-          "name": "움직이는 가시나무",
+          "name": "움직이는 가시나무 망령 처치",
           "reward": "미가공 스킬젬(Lv.2)",
           "note": "필수 아님",
-          "filters": {
-            "regular": true,
-            "semiStrict": false,
-            "uber": false,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": false, "uber": false, "custom": false }
         },
         {
           "id": "q6",
@@ -77,12 +52,7 @@
           "name": "오두막 안 아리아그네 처치",
           "reward": "미가공 보조젬(Lv.1),플라스크",
           "note": "필수 아님",
-          "filters": {
-            "regular": true,
-            "semiStrict": false,
-            "uber": false,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": false, "uber": false, "custom": false }
         },
         {
           "id": "q7",
@@ -90,12 +60,7 @@
           "name": "(WP)그렐우드 웨이포인트 찾고 바로 옆 '우나'와 대화",
           "reward": "",
           "note": "주로 클리어펠 반대편에 위치",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": false,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": true, "uber": false, "custom": false }
         },
         {
           "id": "q8",
@@ -103,12 +68,7 @@
           "name": "(WP)으스스한 덩굴 찍기",
           "reward": "",
           "note": "WP만 찍고 바로 나오기(추후 진행)",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": false,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": true, "uber": false, "custom": false }
         },
         {
           "id": "q9",
@@ -116,12 +76,7 @@
           "name": "(WP) 붉은 계곡 찍기",
           "reward": "",
           "note": "",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": false,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": true, "uber": false, "custom": false }
         },
         {
           "id": "q10",
@@ -129,25 +84,15 @@
           "name": "오벨리스크 3개 활성화 및 녹왕 처치",
           "reward": "룬 각인 가시",
           "note": "완료 후 마을에서 '렌리'와 대화",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": false,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": true, "uber": false, "custom": false }
         },
         {
           "id": "q11",
           "waypoint": "그렐우드",
-          "name": "\"룬 각인 가시(퀘스트템)\" 들고 (WP)그렐우드에서 퀘스트 진행",
+          "name": "\"룬 각인 가시(퀘스트템)\" 들고 (WP)그렐우드에서 나무에 인장 3개 꽂기",
           "reward": "",
           "note": "룬의 인장 3개 활성화→우나 대화→마을→우나 대화",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": false,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": true, "uber": false, "custom": false }
         },
         {
           "id": "q12",
@@ -155,12 +100,7 @@
           "name": "썩은 드루이드 처치",
           "reward": "미가공 보조젬(Lv.1)",
           "note": "",
-          "filters": {
-            "regular": true,
-            "semiStrict": false,
-            "uber": false,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": false, "uber": false, "custom": false }
         },
         {
           "id": "q13",
@@ -168,12 +108,7 @@
           "name": "(WP) 영원한 자의 공동묘지로 이동",
           "reward": "",
           "note": "",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": false,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": true, "uber": false, "custom": false }
         },
         {
           "id": "q14",
@@ -181,12 +116,7 @@
           "name": "집정관의 능묘 또는 배우자의 무덤 클리어(1)",
           "reward": "",
           "note": "순서 상관없이 먼저 찾은거 클리어",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": false,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": true, "uber": false, "custom": false }
         },
         {
           "id": "q15",
@@ -194,12 +124,7 @@
           "name": "집정관의 능묘 또는 배우자의 무덤 클리어(2)",
           "reward": "",
           "note": "순서 상관없이 먼저 찾은거 클리어",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": false,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": true, "uber": false, "custom": false }
         },
         {
           "id": "q16",
@@ -207,12 +132,7 @@
           "name": "(WP) 웨이포인트 와서 라클란 대화 후 처치",
           "reward": "두건 쓴 자(NPC) 부활",
           "note": "아이템 식별은 이제 Ctrl+두건쓴자 클릭",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": false,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": true, "uber": false, "custom": false }
         },
         {
           "id": "q17",
@@ -220,12 +140,7 @@
           "name": "까마귀 종 처치",
           "reward": "패시브 2포인트",
           "note": "",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": true,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": true, "uber": true, "custom": false }
         },
         {
           "id": "q18",
@@ -233,12 +148,7 @@
           "name": "(WP) 오검농지, 프레이쏜 찾아서 활성화하기",
           "reward": "",
           "note": "",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": false,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": true, "uber": false, "custom": false }
         },
         {
           "id": "q19",
@@ -246,12 +156,7 @@
           "name": "의식제단 4곳 활성화 후 연무속의 왕 처치",
           "reward": "정신력+30/정신력젬(Lv.4)",
           "note": "",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": true,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": true, "uber": true, "custom": false }
         },
         {
           "id": "q20",
@@ -259,12 +164,7 @@
           "name": "우나의 집에서 '우나의 류트' 찾고 우나 가져다주기",
           "reward": "패시브 2포인트",
           "note": "",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": true,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": true, "uber": true, "custom": false }
         },
         {
           "id": "q21",
@@ -272,12 +172,7 @@
           "name": "대장장이 도구 찾아서 '렌리'에게 전달",
           "reward": "분해 작업대 해금",
           "note": "부캐부터는 안 깨도 됨",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": false,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": true, "uber": false, "custom": false }
         },
         {
           "id": "q22",
@@ -285,12 +180,7 @@
           "name": "사형 집행자 처치→손잡이 작동→레이티스 대화",
           "reward": "미가공 스킬젬(Lv.5)",
           "note": "",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": false,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": true, "uber": false, "custom": false }
         },
         {
           "id": "q23",
@@ -298,12 +188,7 @@
           "name": "교수대 밧줄 풀기",
           "reward": "미가공 보조젬(Lv.1)",
           "note": "",
-          "filters": {
-            "regular": true,
-            "semiStrict": false,
-            "uber": false,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": false, "uber": false, "custom": false }
         },
         {
           "id": "q24",
@@ -311,12 +196,7 @@
           "name": "(WP) 오검 저택으로 이동",
           "reward": "",
           "note": "",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": false,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": true, "uber": false, "custom": false }
         },
         {
           "id": "q25",
@@ -324,12 +204,7 @@
           "name": "1층에서 양초 덩어리 처치",
           "reward": "생명력 최대치 +20",
           "note": "",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": true,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": true, "uber": true, "custom": false }
         },
         {
           "id": "q26",
@@ -337,12 +212,7 @@
           "name": "1층에서 계단 타고 2층 더 내려가서 지오너 백작 처치",
           "reward": "Act 2로 이동",
           "note": "",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": false,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": true, "uber": false, "custom": false }
         }
       ]
     },
@@ -356,12 +226,7 @@
           "name": "토성 파괴자 처치→포탈→자르카 대화→마을로 입장",
           "reward": "",
           "note": "",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": false,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": true, "uber": false, "custom": false }
         },
         {
           "id": "q28",
@@ -369,12 +234,7 @@
           "name": "아살라 대화 후 사막지도 장치→할라니 관문→마을→모둔 채석장",
           "reward": "",
           "note": "",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": false,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": true, "uber": false, "custom": false }
         },
         {
           "id": "q29",
@@ -382,12 +242,7 @@
           "name": "(WP) 모둔 광산으로 이동",
           "reward": "",
           "note": "",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": false,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": true, "uber": false, "custom": false }
         },
         {
           "id": "q30",
@@ -395,12 +250,7 @@
           "name": "룻자 처치→탈주자 리수 대화→마을→(지도장치) 배반자의 통로",
           "reward": "",
           "note": "",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": false,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": true, "uber": false, "custom": false }
         },
         {
           "id": "q31",
@@ -408,12 +258,7 @@
           "name": "발바라 처치 후 (WP) 할라니 관문으로 이동",
           "reward": "",
           "note": "발바라를 처치하고 전직퀘스트 활성화",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": false,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": true, "uber": false, "custom": false }
         },
         {
           "id": "q32",
@@ -421,12 +266,7 @@
           "name": "자만라 처치→마을→(지도장치) 케스로 이동",
           "reward": "",
           "note": "아살라가 따라오지 않으면 체크포인트 활성화 후 체크포인트 재소환",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": false,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": true, "uber": false, "custom": false }
         },
         {
           "id": "q33",
@@ -434,12 +274,7 @@
           "name": "카발라 처치",
           "reward": "패시브 2포인트",
           "note": "",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": true,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": true, "uber": true, "custom": false }
         },
         {
           "id": "q34",
@@ -447,12 +282,7 @@
           "name": "몬스터 잡으면서 카발라 혈족 유물(퀘스트템) 획득",
           "reward": "카발라 혈족 유물",
           "note": "",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": false,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": true, "uber": false, "custom": false }
         },
         {
           "id": "q35",
@@ -460,12 +290,7 @@
           "name": "잃어버린 도시로 이동",
           "reward": "",
           "note": "",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": false,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": true, "uber": false, "custom": false }
         },
         {
           "id": "q36",
@@ -473,12 +298,7 @@
           "name": "묻힌 성소로 이동",
           "reward": "",
           "note": "",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": false,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": true, "uber": false, "custom": false }
         },
         {
           "id": "q37",
@@ -486,12 +306,7 @@
           "name": "케스의 심장부 가서 아자리안 처치",
           "reward": "물의 정수(퀘),자르카: 보조젬(Lv.2)",
           "note": "물의 여신과 상호작용하고 물의정수 받기",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": false,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": true, "uber": false, "custom": false }
         },
         {
           "id": "q38",
@@ -499,12 +314,7 @@
           "name": "몬스터 잡으면서 태양 혈족 유물(퀘스트템) 획득",
           "reward": "",
           "note": "",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": false,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": true, "uber": false, "custom": false }
         },
         {
           "id": "q39",
@@ -512,12 +322,7 @@
           "name": "뼈 구덩이로 이동",
           "reward": "",
           "note": "",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": false,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": true, "uber": false, "custom": false }
         },
         {
           "id": "q40",
@@ -525,12 +330,7 @@
           "name": "에크밥+이크탑 처치",
           "reward": "미가공 정신력 젬",
           "note": "",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": false,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": true, "uber": false, "custom": false }
         },
         {
           "id": "q41",
@@ -538,12 +338,7 @@
           "name": "웨이포인트 찾고 근처에서 유물2개 넣는 곳 찾기",
           "reward": "호신부 충전량/호신부 지속시간 중 선택",
           "note": "추후 변경 가능",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": true,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": true, "uber": true, "custom": false }
         },
         {
           "id": "q42",
@@ -551,12 +346,7 @@
           "name": "고대의 봉인 3개 풀고 거신 석굴 찾아서 이동",
           "reward": "",
           "note": "",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": false,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": true, "uber": false, "custom": false }
         },
         {
           "id": "q43",
@@ -564,12 +354,7 @@
           "name": "보스 잘마라트 처치",
           "reward": "보조젬",
           "note": "",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": false,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": true, "uber": false, "custom": false }
         },
         {
           "id": "q44",
@@ -577,12 +362,7 @@
           "name": "자르카→바스티리의 뿔피리 수령→(지도장치)할라니 관문→카라반 뱃머리서 뿔피리 사용",
           "reward": "",
           "note": "카라반 마을에서 1시 방향으로 쭉 가서 뿔피리 불어야 함",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": false,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": true, "uber": false, "custom": false }
         },
         {
           "id": "q45",
@@ -590,12 +370,7 @@
           "name": "데카라→마지막 편지 퀘스트 깨기",
           "reward": "패시브 2포인트",
           "note": "",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": true,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": true, "uber": true, "custom": false }
         },
         {
           "id": "q46",
@@ -603,12 +378,7 @@
           "name": "통곡의 길로 이동",
           "reward": "",
           "note": "",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": false,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": true, "uber": false, "custom": false }
         },
         {
           "id": "q47",
@@ -616,12 +386,7 @@
           "name": "데샤르의 첨탑으로 이동",
           "reward": "",
           "note": "",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": false,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": true, "uber": false, "custom": false }
         },
         {
           "id": "q48",
@@ -629,12 +394,7 @@
           "name": "가루칸의 자매들 상호작용 후 토르 굴 처치",
           "reward": "번개저항 +10%",
           "note": "",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": true,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": true, "uber": true, "custom": false }
         },
         {
           "id": "q49",
@@ -642,12 +402,7 @@
           "name": "드레드노트 선봉대로 이동",
           "reward": "",
           "note": "",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": false,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": true, "uber": false, "custom": false }
         },
         {
           "id": "q50",
@@ -655,12 +410,7 @@
           "name": "흉물 자만라 처치",
           "reward": "Act 3로 이동",
           "note": "",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": true,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": true, "uber": true, "custom": false }
         }
       ]
     },
@@ -674,12 +424,7 @@
           "name": "아자크 모닥불",
           "reward": "하위 쥬얼러 오브",
           "note": "",
-          "filters": {
-            "regular": true,
-            "semiStrict": false,
-            "uber": false,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": false, "uber": false, "custom": false }
         },
         {
           "id": "q52",
@@ -687,12 +432,7 @@
           "name": "지구라트 야영지로 이동",
           "reward": "",
           "note": "",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": false,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": true, "uber": false, "custom": false }
         },
         {
           "id": "q53",
@@ -700,12 +440,7 @@
           "name": "밀림 유적으로 이동",
           "reward": "",
           "note": "",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": false,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": true, "uber": false, "custom": false }
         },
         {
           "id": "q54",
@@ -713,12 +448,7 @@
           "name": "밀림 유적, 들끓는 불모지 웨이포인트 찾기",
           "reward": "",
           "note": "",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": false,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": true, "uber": false, "custom": false }
         },
         {
           "id": "q55",
@@ -726,12 +456,7 @@
           "name": "은빛 주먹 찾아서 처치",
           "reward": "패시브 2포인트",
           "note": "",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": true,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": true, "uber": true, "custom": false }
         },
         {
           "id": "q56",
@@ -739,12 +464,7 @@
           "name": "독액 지하실→시체뱀 독액→세르비 대화→보상",
           "reward": "기절저항한계/원소저항한계/마나재생속도 중 1개 선택",
           "note": "밀림유적 웨이 근처 독액지하실 있음",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": true,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": true, "uber": true, "custom": false }
         },
         {
           "id": "q57",
@@ -752,12 +472,7 @@
           "name": "아자크 습지대, 키메랄 습지대 웨이포인트 찾기",
           "reward": "",
           "note": "",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": false,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": true, "uber": false, "custom": false }
         },
         {
           "id": "q58",
@@ -765,12 +480,7 @@
           "name": "이그나그두크 처치",
           "reward": "정신력+30/정신력젬(Lv.10)",
           "note": "",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": true,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": true, "uber": true, "custom": false }
         },
         {
           "id": "q59",
@@ -778,12 +488,7 @@
           "name": "혼돈의 사원(WP), 자이클루시언(대형 몹) 찾기",
           "reward": "",
           "note": "",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": false,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": true, "uber": false, "custom": false }
         },
         {
           "id": "q60",
@@ -791,12 +496,7 @@
           "name": "2차 전직",
           "reward": "",
           "note": "",
-          "filters": {
-            "regular": true,
-            "semiStrict": false,
-            "uber": false,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": false, "uber": false, "custom": false }
         },
         {
           "id": "q61",
@@ -804,12 +504,7 @@
           "name": "자이클루시언 잡고 안쪽에 있는 지콰니의 기계시롤 이동",
           "reward": "",
           "note": "",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": false,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": true, "uber": false, "custom": false }
         },
         {
           "id": "q62",
@@ -817,12 +512,7 @@
           "name": "작은 영혼 핵 획득 후 검은턱 잡기",
           "reward": "화염저항 +10%",
           "note": "",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": true,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": true, "uber": true, "custom": false }
         },
         {
           "id": "q63",
@@ -830,12 +520,7 @@
           "name": "지콰니의 지성소로 이동",
           "reward": "",
           "note": "",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": false,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": true, "uber": false, "custom": false }
         },
         {
           "id": "q64",
@@ -843,12 +528,7 @@
           "name": "발전기 2개 활성화 후 웨이로 와서 지코아틀 처치",
           "reward": "큰 영혼 핵",
           "note": "",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": false,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": true, "uber": false, "custom": false }
         },
         {
           "id": "q65",
@@ -856,12 +536,7 @@
           "name": "큰 영혼핵으로 WP 바로 옆의 돌 제단 활성→ 마틀란 수로",
           "reward": "",
           "note": "마틀란 수로는 돌제단 근처에 있음",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": false,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": true, "uber": false, "custom": false }
         },
         {
           "id": "q66",
@@ -869,12 +544,7 @@
           "name": "운하 지렛대 작동→마을→알바와 대화→물에 잠긴 도시로 이동",
           "reward": "",
           "note": "마을 두건쓴자 아래쪽 계단 아래에 알바 있음",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": false,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": true, "uber": false, "custom": false }
         },
         {
           "id": "q67",
@@ -882,12 +552,7 @@
           "name": "오물의 정점으로 이동",
           "reward": "",
           "note": "녹아내린 금고퀘는 부캐는 패스",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": false,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": true, "uber": false, "custom": false }
         },
         {
           "id": "q68",
@@ -895,12 +560,7 @@
           "name": "매크툴 처치",
           "reward": "제련 작업대 활성화",
           "note": "",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": false,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": true, "uber": false, "custom": false }
         },
         {
           "id": "q69",
@@ -908,12 +568,7 @@
           "name": "버섯 3개 먹고 가마솥 보관자(NPC)랑 상호작용",
           "reward": "플라스크 2개",
           "note": "물약 필요하면 클리어하기",
-          "filters": {
-            "regular": true,
-            "semiStrict": false,
-            "uber": false,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": false, "uber": false, "custom": false }
         },
         {
           "id": "q70",
@@ -921,12 +576,7 @@
           "name": "오물의 여왕 처치→마을→알바 뒷편 문 상호작용→코펙의 사원",
           "reward": "사원문우상(퀘)",
           "note": "",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": false,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": true, "uber": false, "custom": false }
         },
         {
           "id": "q71",
@@ -934,12 +584,7 @@
           "name": "1층→2층→3층 케출리 처치→알바→마을→웃자알로 이동",
           "reward": "",
           "note": "",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": false,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": true, "uber": false, "custom": false }
         },
         {
           "id": "q72",
@@ -947,12 +592,7 @@
           "name": "바이퍼 나푸앗지 처치→아고라트로 이동",
           "reward": "",
           "note": "웃자알,아고라트에서 희생의 심장 획득",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": false,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": true, "uber": false, "custom": false }
         },
         {
           "id": "q73",
@@ -960,12 +600,7 @@
           "name": "희생의 심장 획득→희생의제단→검은 내실로 이동",
           "reward": "패시브 2포인트",
           "note": "웃자알,아고라트에서 희생의 심장 획득",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": true,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": true, "uber": true, "custom": false }
         },
         {
           "id": "q74",
@@ -973,12 +608,7 @@
           "name": "도리아니 처치",
           "reward": "Act 4로 이동",
           "note": "",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": false,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": true, "uber": false, "custom": false }
         }
       ]
     },
@@ -992,12 +622,7 @@
           "name": "아래쪽 배로 가서 마코루와 대화",
           "reward": "",
           "note": "",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": false,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": true, "uber": false, "custom": false }
         },
         {
           "id": "q76",
@@ -1005,12 +630,7 @@
           "name": "화석화된 퇴적물",
           "reward": "하위 주얼러 오브",
           "note": "필수 아님",
-          "filters": {
-            "regular": true,
-            "semiStrict": false,
-            "uber": false,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": false, "uber": false, "custom": false }
         },
         {
           "id": "q77",
@@ -1018,12 +638,7 @@
           "name": "혈족의 군주 크루톡 처치",
           "reward": "",
           "note": "",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": false,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": true, "uber": false, "custom": false }
         },
         {
           "id": "q78",
@@ -1031,12 +646,7 @@
           "name": "여정의 끝으로 이동",
           "reward": "",
           "note": "",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": false,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": true, "uber": false, "custom": false }
         },
         {
           "id": "q79",
@@ -1044,12 +654,7 @@
           "name": "투젠 대화→하틀린 선장 처치",
           "reward": "베리시움",
           "note": "",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": false,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": true, "uber": false, "custom": false }
         },
         {
           "id": "q80",
@@ -1057,12 +662,7 @@
           "name": "베리시움 들고→마을 '대닉'에게→가시 수령",
           "reward": "",
           "note": "",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": false,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": true, "uber": false, "custom": false }
         },
         {
           "id": "q81",
@@ -1070,12 +670,7 @@
           "name": "가시 수령 후→여정의 끝으로 이동→하틀린 처치",
           "reward": "패시브 2포인트",
           "note": "",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": true,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": true, "uber": true, "custom": false }
         },
         {
           "id": "q82",
@@ -1083,12 +678,7 @@
           "name": "노래하는 암굴로 이동",
           "reward": "",
           "note": "",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": false,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": true, "uber": false, "custom": false }
         },
         {
           "id": "q83",
@@ -1096,12 +686,7 @@
           "name": "부르는 조개",
           "reward": "저항 목걸이",
           "note": "필수 아님",
-          "filters": {
-            "regular": true,
-            "semiStrict": false,
-            "uber": false,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": false, "uber": false, "custom": false }
         },
         {
           "id": "q84",
@@ -1109,12 +694,7 @@
           "name": "디아모라 처치",
           "reward": "",
           "note": "",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": false,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": true, "uber": false, "custom": false }
         },
         {
           "id": "q85",
@@ -1122,12 +702,7 @@
           "name": "예배당 열쇠 획득 후→예배당 진입→여신상 클릭",
           "reward": "플라스크 회복량 선택",
           "note": "",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": true,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": true, "uber": true, "custom": false }
         },
         {
           "id": "q86",
@@ -1135,12 +710,7 @@
           "name": "독방 감금실로 이동",
           "reward": "",
           "note": "",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": false,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": true, "uber": false, "custom": false }
         },
         {
           "id": "q87",
@@ -1148,12 +718,7 @@
           "name": "포로(보스) 처치",
           "reward": "",
           "note": "",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": false,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": true, "uber": false, "custom": false }
         },
         {
           "id": "q88",
@@ -1161,12 +726,7 @@
           "name": "하늘의 재앙 처치",
           "reward": "",
           "note": "",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": false,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": true, "uber": false, "custom": false }
         },
         {
           "id": "q89",
@@ -1174,12 +734,7 @@
           "name": "시련들 클리어→고요한 전당에서 경의 표하기",
           "reward": "최대 마나 증가",
           "note": "",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": true,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": true, "uber": true, "custom": false }
         },
         {
           "id": "q90",
@@ -1187,12 +742,7 @@
           "name": "죽음의 전당으로 이동",
           "reward": "",
           "note": "",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": false,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": true, "uber": false, "custom": false }
         },
         {
           "id": "q91",
@@ -1200,12 +750,7 @@
           "name": "3종 시험 클리어",
           "reward": "저항 보상 또는 스탯 보상 선택",
           "note": "총 3번의 선택지가 있음",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": true,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": true, "uber": true, "custom": false }
         },
         {
           "id": "q92",
@@ -1213,12 +758,7 @@
           "name": "하얀 야마 처치→뒤쪽 선조들의 심판으로 이동",
           "reward": "",
           "note": "",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": false,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": true, "uber": false, "custom": false }
         },
         {
           "id": "q93",
@@ -1226,12 +766,7 @@
           "name": "나발리 대화하여 보상 수령",
           "reward": "패시브 2포인트",
           "note": "",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": true,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": true, "uber": true, "custom": false }
         },
         {
           "id": "q94",
@@ -1239,12 +774,7 @@
           "name": "건물 안→나와서 방어막 부수고→토르비안 처치",
           "reward": "",
           "note": "",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": false,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": true, "uber": false, "custom": false }
         },
         {
           "id": "q95",
@@ -1252,12 +782,7 @@
           "name": "종 2개 찾아서 치기(선택)→발굴터로 이동",
           "reward": "엑잘 3개, 제왕 3개",
           "note": "",
-          "filters": {
-            "regular": true,
-            "semiStrict": false,
-            "uber": false,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": false, "uber": false, "custom": false }
         },
         {
           "id": "q96",
@@ -1265,12 +790,7 @@
           "name": "베네딕투스 처치",
           "reward": "",
           "note": "",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": false,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": true, "uber": false, "custom": false }
         },
         {
           "id": "q97",
@@ -1278,12 +798,7 @@
           "name": "부족의 심장부로 이동",
           "reward": "",
           "note": "",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": false,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": true, "uber": false, "custom": false }
         },
         {
           "id": "q98",
@@ -1291,12 +806,7 @@
           "name": "타바카이 처치",
           "reward": "막간으로 이동",
           "note": "",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": false,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": true, "uber": false, "custom": false }
         }
       ]
     },
@@ -1306,29 +816,75 @@
       "quests": [
         {
           "id": "q99",
-          "waypoint": "",
-          "name": "다음시즌 없어질 액트 같아서 정리 안함(필수만 추가)",
+          "waypoint": "잿빛 수림",
+          "name": "크라이 마을로 이동",
           "reward": "",
           "note": "",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": true,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": false, "uber": false, "custom": false }
         },
         {
           "id": "q100",
+          "waypoint": "크라이 마을",
+          "name": "보스(라이타라) 처치 후 빙하 호수로 이동",
+          "reward": "정신력 +40",
+          "note": "",
+          "filters": { "regular": true, "semiStrict": true, "uber": true, "custom": false }
+        },
+        {
+          "id": "q101",
+          "waypoint": "빙하 호수",
+          "name": "울부짖는 동굴로 이동",
+          "reward": "",
+          "note": "",
+          "filters": { "regular": true, "semiStrict": false, "uber": false, "custom": false }
+        },
+        {
+          "id": "q102",
+          "waypoint": "울부짖는 동굴",
+          "name": "설인 처치",
+          "reward": "패시브 2포인트",
+          "note": "",
+          "filters": { "regular": true, "semiStrict": true, "uber": true, "custom": false }
+        },
+        {
+          "id": "q103",
+          "waypoint": "빙하 호수",
+          "name": "빙하 호수 다시 와서 보스 처치 후 크리아 봉우리로 이동",
+          "reward": "",
+          "note": "",
+          "filters": { "regular": true, "semiStrict": false, "uber": false, "custom": false }
+        },
+        {
+          "id": "q104",
+          "waypoint": "크리아 봉우리",
+          "name": "아로새겨진 심곡으로 이동",
+          "reward": "",
+          "note": "",
+          "filters": { "regular": true, "semiStrict": false, "uber": false, "custom": false }
+        },
+        {
+          "id": "q105",
+          "waypoint": "아로새겨진 심곡",
+          "name": "보스(폭풍 선혈) 처치 후 쿠아식 금고실로 이동",
+          "reward": "",
+          "note": "",
+          "filters": { "regular": true, "semiStrict": false, "uber": false, "custom": false }
+        },
+        {
+          "id": "q106",
+          "waypoint": "쿠아식 금고실",
+          "name": "보스(졸린과 젤리나) 처치",
+          "reward": "",
+          "note": "",
+          "filters": { "regular": true, "semiStrict": false, "uber": false, "custom": false }
+        },
+        {
+          "id": "q107",
           "waypoint": "울븐홀드",
           "name": "오스윈 처치",
           "reward": "패시브 2포인트",
           "note": "",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": true,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": true, "uber": true, "custom": false }
         }
       ]
     },
@@ -1337,43 +893,68 @@
       "name": "막간 2",
       "quests": [
         {
-          "id": "q101",
+          "id": "q108",
           "waypoint": "카리 교차로",
-          "name": "아크티와 아눈드르 처치",
+          "name": "아크티와 아눈드르 처치(전갈,지렁이 보스)",
           "reward": "패시브 2포인트",
-          "note": "",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": true,
-            "custom": false
-          }
+          "note": "마을에서 오른쪽 아래로 벽 따라 이동",
+          "filters": { "regular": true, "semiStrict": true, "uber": true, "custom": false }
         },
         {
-          "id": "q102",
+          "id": "q109",
           "waypoint": "해골아귀 계단",
-          "name": "상호작용",
+          "name": "해골아귀 계단 진입 후 상호작용",
           "reward": "최대 생명력 증가",
-          "note": "",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": true,
-            "custom": false
-          }
+          "note": "마을에서 오른쪽 위쪽으로 벽 따라 이동",
+          "filters": { "regular": true, "semiStrict": true, "uber": true, "custom": false }
         },
         {
-          "id": "q103",
+          "id": "q110",
+          "waypoint": "갈라이 문",
+          "name": "WP만 찍고 다시 카리 교차로→왼쪽 카탈의 웅덩이로 이동",
+          "reward": "",
+          "note": "왼쪽 벽 타고 이동",
+          "filters": { "regular": true, "semiStrict": false, "uber": false, "custom": false }
+        },
+        {
+          "id": "q111",
+          "waypoint": "카탈의 웅덩이",
+          "name": "셀 카리 영역 찾아 이동",
+          "reward": "",
+          "note": "",
+          "filters": { "regular": true, "semiStrict": false, "uber": false, "custom": false }
+        },
+        {
+          "id": "q112",
+          "waypoint": "셀 카리 영역",
+          "name": "보스 처치 후 (WP)갈라이 문으로 이동",
+          "reward": "",
+          "note": "몹 잡고 나온 바리야를 맵 좌우 제단에 바치면 목걸이,반지 랜덤 제공",
+          "filters": { "regular": true, "semiStrict": false, "uber": false, "custom": false }
+        },
+        {
+          "id": "q113",
+          "waypoint": "갈라이 문",
+          "name": "보스 처치 후 키마로 이동",
+          "reward": "",
+          "note": "",
+          "filters": { "regular": true, "semiStrict": false, "uber": false, "custom": false }
+        },
+        {
+          "id": "q114",
           "waypoint": "키마",
           "name": "타바나 기둥",
           "reward": "은혜 택 1",
           "note": "변경 가능",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": true,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": true, "uber": true, "custom": false }
+        },
+        {
+          "id": "q115",
+          "waypoint": "키마 저수지",
+          "name": "보스(아즈마디) 처치 후 두건쓴자와 대화",
+          "reward": "",
+          "note": "",
+          "filters": { "regular": true, "semiStrict": false, "uber": false, "custom": false }
         }
       ]
     },
@@ -1382,49 +963,90 @@
       "name": "막간 3",
       "quests": [
         {
-          "id": "q104",
-          "waypoint": "크리아 마을",
-          "name": "라이타라 처치",
-          "reward": "정신력 +40",
+          "id": "q116",
+          "waypoint": "그을린 농지",
+          "name": "보스 2마리 처치(이졸데와 헬드라) 처치",
+          "reward": "",
           "note": "",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": true,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": false, "uber": false, "custom": false }
         },
         {
-          "id": "q105",
-          "waypoint": "울부짖는 동굴",
-          "name": "설인 처치",
+          "id": "q117",
+          "waypoint": "그을린 농지",
+          "name": "검은숲 입구 근처 체크포인트 찾고 세를의 두름돌로 이동",
+          "reward": "",
+          "note": "",
+          "filters": { "regular": true, "semiStrict": false, "uber": false, "custom": false }
+        },
+        {
+          "id": "q118",
+          "waypoint": "세를의 두름돌",
+          "name": "맵 외곽 룬각인거석 6개 활성화 후 보스(시오라) 처치",
+          "reward": "",
+          "note": "",
+          "filters": { "regular": true, "semiStrict": false, "uber": false, "custom": false }
+        },
+        {
+          "id": "q119",
+          "waypoint": "그을린 농지",
+          "name": "체크포인트 활용하여 검은숲으로 이동",
+          "reward": "",
+          "note": "",
+          "filters": { "regular": true, "semiStrict": false, "uber": false, "custom": false }
+        },
+        {
+          "id": "q120",
+          "waypoint": "검은 숲",
+          "name": "홀튼으로 이동",
+          "reward": "",
+          "note": "",
+          "filters": { "regular": true, "semiStrict": false, "uber": false, "custom": false }
+        },
+        {
+          "id": "q121",
+          "waypoint": "홀튼",
+          "name": "우측 상단의 울븐홀드 찾아 이동",
+          "reward": "",
+          "note": "룬 판매 NPC도 맵 중간즈음에 있음",
+          "filters": { "regular": true, "semiStrict": false, "uber": false, "custom": false }
+        },
+        {
+          "id": "q122",
+          "waypoint": "울븐홀드",
+          "name": "보스(오스윈) 처치",
           "reward": "패시브 2포인트",
           "note": "",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": true,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": true, "uber": true, "custom": false }
+        },
+        {
+          "id": "q123",
+          "waypoint": "홀튼",
+          "name": "홀튼 영지 찾아 이동",
+          "reward": "",
+          "note": "",
+          "filters": { "regular": true, "semiStrict": false, "uber": false, "custom": false }
+        },
+        {
+          "id": "q124",
+          "waypoint": "홀튼 영지",
+          "name": "보스(엘스위트와 울프릭) 처치",
+          "reward": "",
+          "note": "",
+          "filters": { "regular": true, "semiStrict": false, "uber": false, "custom": false }
         }
       ]
     },
     {
       "id": "막간4",
-      "name": "막간",
+      "name": "막간 4",
       "quests": [
         {
-          "id": "q106",
+          "id": "q125",
           "waypoint": "킹스마치",
-          "name": "두건쓴자에게 가서 퀘스트 완료",
+          "name": "Act4의 마을(킹스마치) 두건 쓴 자에게 가서 퀘스트 완료",
           "reward": "패시브 2포인트",
           "note": "",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": true,
-            "custom": false
-          }
+          "filters": { "regular": true, "semiStrict": true, "uber": true, "custom": false }
         }
       ]
     }
