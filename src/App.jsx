@@ -538,9 +538,9 @@ function App() {
                 onClick={handleTogglePip}
                 className={`px-4 py-2 rounded-lg font-body font-semibold transition-all text-sm ${
                   pipWindow
-                    ? 'bg-gradient-to-r from-yellow-600 to-yellow-700 hover:from-yellow-700 hover:to-yellow-800'
-                    : 'bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700'
-                } text-white shadow-lg hover:shadow-xl hover:scale-105`}
+                    ? 'bg-gradient-to-r from-yellow-600 to-yellow-700 hover:from-yellow-700 hover:to-yellow-800 shadow-lg'
+                    : 'bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 shadow-[0_0_12px_2px_rgba(250,204,21,0.4)] animate-pulse'
+                } text-white hover:shadow-xl hover:scale-105`}
                 title="게임 오버레이 모드"
               >
                 오버레이
@@ -555,12 +555,6 @@ function App() {
               customQuestData={customQuestData}
               questOrder={questOrder}
             />
-            <button
-              onClick={handleReset}
-              className="px-4 py-2 rounded-lg font-body font-semibold transition-all text-sm bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white shadow-lg hover:shadow-xl hover:scale-105"
-            >
-              초기화
-            </button>
           </div>
         </div>
 
