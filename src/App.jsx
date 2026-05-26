@@ -30,6 +30,7 @@ function App() {
   const [isGuideOpen, setIsGuideOpen] = useState(false);
   const [isDataModalOpen, setIsDataModalOpen] = useState(false);
   const [newlyAddedQuestId, setNewlyAddedQuestId] = useState(null);
+  const [showScrollTop, setShowScrollTop] = useState(false);
 
   useEffect(() => {
     const sharedState = decodeStateFromUrl(window.location.hash);
@@ -68,6 +69,12 @@ function App() {
       saveState({ filter, completed, filterDefs, customFilterSets, customQuestData, questOrder });
     }
   }, [filter, completed, filterDefs, customFilterSets, customQuestData, questOrder, loading]);
+
+  useEffect(() => {
+    const onScroll = () => setShowScrollTop(window.scrollY > 300);
+    window.addEventListener('scroll', onScroll);
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
   const handleFilterChange = (newFilter) => {
     setFilter(newFilter);
@@ -640,6 +647,18 @@ function App() {
         />
         </div>
       </div>
+
+      {showScrollTop && (
+        <button
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          className="fixed bottom-6 right-6 z-50 p-3 rounded-full bg-black/60 border border-white/10 text-gray-400 hover:text-yellow-400 hover:border-yellow-400/30 hover:bg-black/80 transition-all shadow-lg backdrop-blur-sm"
+          aria-label="맨 위로"
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+          </svg>
+        </button>
+      )}
     </>
   );
 }
