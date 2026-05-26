@@ -172,12 +172,14 @@ function QuestCard({
             className="custom-checkbox mt-1"
           />
           <div className="flex-1">
+            {quest.waypoint && (
+              <span className="inline-flex items-center gap-1 text-xs text-gray-300 bg-white/5 rounded px-1.5 py-0.5 mb-1.5 border border-white/10">
+                📍 {quest.waypoint}
+              </span>
+            )}
             <h3 className="text-base font-medium mb-1">
               {quest.name}
             </h3>
-            {quest.waypoint && (
-              <p className="text-xs text-gray-500 mb-2">📍 {quest.waypoint}</p>
-            )}
             {quest.reward && (
               <div className="flex flex-wrap gap-2 mb-2">
                 {quest.reward.split(',').map((reward, index) => {
