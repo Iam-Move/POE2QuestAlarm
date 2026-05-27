@@ -38,7 +38,6 @@ function App() {
   const [timerStartedAt, setTimerStartedAt] = useState(null);
   const [undoStack, setUndoStack] = useState([]);
   const [isResetModalOpen, setIsResetModalOpen] = useState(false);
-  const [pipOpacity, setPipOpacity] = useState(1);
 
   useEffect(() => {
     const sharedState = decodeStateFromUrl(window.location.hash);
@@ -57,7 +56,6 @@ function App() {
         setTimerSeconds(savedState.timerSeconds || 0);
         setTimerStartedAt(savedState.timerStartedAt || null);
         setTimerRunning(savedState.timerRunning || false);
-        if (savedState.pipOpacity != null) setPipOpacity(savedState.pipOpacity);
       }
     }
 
@@ -78,9 +76,9 @@ function App() {
 
   useEffect(() => {
     if (!loading) {
-      saveState({ filter, completed, filterDefs, customFilterSets, customQuestData, questOrder, timerSeconds, timerStartedAt, pipOpacity });
+      saveState({ filter, completed, filterDefs, customFilterSets, customQuestData, questOrder, timerSeconds, timerStartedAt });
     }
-  }, [filter, completed, filterDefs, customFilterSets, customQuestData, questOrder, timerSeconds, timerStartedAt, pipOpacity, loading]);
+  }, [filter, completed, filterDefs, customFilterSets, customQuestData, questOrder, timerSeconds, timerStartedAt, loading]);
 
   useEffect(() => {
     const onScroll = () => setShowScrollTop(window.scrollY > 300);
@@ -726,8 +724,6 @@ function App() {
             onTimerEdit={handleTimerEdit}
             activeFilterName={activeFilterName}
             onProgressReset={() => handleProgressReset(null)}
-            pipOpacity={pipOpacity}
-            onPipOpacityChange={setPipOpacity}
           />
         )}
 
