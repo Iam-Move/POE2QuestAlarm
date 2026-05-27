@@ -175,12 +175,11 @@ function App() {
     }
   };
 
-  const handleCsvImport = (items, includeCompleted) => {
+  const handleCsvImport = (items) => {
     const validActIds = new Set(mergedQuestsData?.acts.map(a => a.id) || []);
     const newCustomQuestData = { ...customQuestData };
     const newQuestOrder = { ...questOrder };
     const newCustomFilterSets = { ...customFilterSets };
-    const newCompleted = [...completed];
     let newFilterDefs = [...filterDefs];
 
     // Pre-collect unique custom filter names and create missing filter tabs
@@ -220,8 +219,8 @@ function App() {
       const currentIds = newQuestOrder[actId] || (currentAct ? currentAct.quests.map(q => q.id) : []);
       const newIds = [...currentIds];
 
-      actItems.forEach(({ quest, customFilterNames, isCompleted: questCompleted }) => {
-        newCustomQuestData[quest.id] = quest;
+      actItems.forEach(({ quest, customFilterNames }) => {
+        newCustomQuestData[quest.id] = { ...quest, csvImported: true };
         newIds.push(quest.id);
 
         (customFilterNames || []).forEach(name => {
@@ -231,10 +230,6 @@ function App() {
             newCustomFilterSets[targetId][quest.id] = true;
           }
         });
-
-        if (includeCompleted && questCompleted && !newCompleted.includes(quest.id)) {
-          newCompleted.push(quest.id);
-        }
       });
 
       newQuestOrder[actId] = newIds;
@@ -251,7 +246,6 @@ function App() {
     setQuestOrder(newQuestOrder);
     setCustomFilterSets(newCustomFilterSets);
     setFilterDefs(newFilterDefs);
-    if (includeCompleted) setCompleted(newCompleted);
   };
 
   const handleToggleFilterMembership = (questId) => {
@@ -268,34 +262,34 @@ function App() {
     setActOverrides(prev => ({ ...prev, [actId]: newName }));
   };
 
-  const handleDeleteAct = (actId) => {
-    const isCustom = customActs.some(ca => ca.id === actId);
-    if (isCustom) {
-      setCustomActs(prev => prev.filter(a => a.id !== actId));
-      setCustomQuestData(prev => {
-        const next = { ...prev };
-        Object.keys(next).forEach(id => { if (id.startsWith(`custom_${actId}_`)) delete next[id]; });
-        return next;
-      });
-      setCustomFilterSets(prev => {
-        const next = {};
-        Object.entries(prev).forEach(([fid, set]) => {
-          const s = { ...set };
-          Object.keys(s).forEach(qid => { if (qid.startsWith(`custom_${actId}_`)) delete s[qid]; });
-          next[fid] = s;
-        });
-        return next;
-      });
-      setQuestOrder(prev => { const n = { ...prev }; delete n[actId]; return n; });
-    } else {
-      setHiddenActs(prev => [...new Set([...prev, actId])]);
-    }
+  const handleHideAct = (actId) => {
+    setHiddenActs(prev => [...new Set([...prev, actId])]);
     setActOrder(prev => prev.filter(id => id !== actId));
-    setActOverrides(prev => { const n = { ...prev }; delete n[actId]; return n; });
   };
 
   const handleRestoreAct = (actId) => {
     setHiddenActs(prev => prev.filter(id => id !== actId));
+  };
+
+  const handlePermanentlyDeleteAct = (actId) => {
+    setHiddenActs(prev => prev.filter(id => id !== actId));
+    setCustomActs(prev => prev.filter(a => a.id !== actId));
+    setCustomQuestData(prev => {
+      const next = { ...prev };
+      Object.keys(next).forEach(id => { if (id.startsWith(`custom_${actId}_`)) delete next[id]; });
+      return next;
+    });
+    setCustomFilterSets(prev => {
+      const next = {};
+      Object.entries(prev).forEach(([fid, set]) => {
+        const s = { ...set };
+        Object.keys(s).forEach(qid => { if (qid.startsWith(`custom_${actId}_`)) delete s[qid]; });
+        next[fid] = s;
+      });
+      return next;
+    });
+    setQuestOrder(prev => { const n = { ...prev }; delete n[actId]; return n; });
+    setActOverrides(prev => { const n = { ...prev }; delete n[actId]; return n; });
   };
 
   const handleMoveAct = (actId, direction) => {
@@ -563,6 +557,7 @@ function App() {
             waypoint: data.waypoint || '',
             reward: data.reward,
             note: data.note,
+            csvImported: data.csvImported || false,
             filters: data.filters || { regular: true, semiStrict: false, uber: false }
           }));
 
@@ -795,7 +790,7 @@ function App() {
                 onBulkSetFilterMembership={handleBulkSetFilterMembership}
                 isCustomAct={customActs.some(ca => ca.id === act.id)}
                 onRenameAct={handleRenameAct}
-                onDeleteAct={handleDeleteAct}
+                onDeleteAct={handleHideAct}
                 onMoveAct={handleMoveAct}
                 onUpdateQuest={handleUpdateQuest}
                 onDeleteQuest={handleDeleteQuest}
@@ -810,23 +805,31 @@ function App() {
               <p className="text-xs font-body mb-3" style={{ color: 'var(--text-secondary)' }}>
                 숨겨진 액트 ({hiddenActs.length}개)
               </p>
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-col gap-2">
                 {hiddenActs.map(actId => {
                   const builtIn = questsData?.acts.find(a => a.id === actId);
+                  const isCustom = customActs.some(ca => ca.id === actId);
                   const name = actOverrides[actId] || builtIn?.name || actId;
                   return (
-                    <button
-                      key={actId}
-                      onClick={() => handleRestoreAct(actId)}
-                      className="px-3 py-1.5 text-xs rounded-lg font-body transition-all hover:scale-105"
-                      style={{
-                        background: 'rgba(212,175,55,0.1)',
-                        border: '1px solid rgba(212,175,55,0.35)',
-                        color: 'var(--gold-primary)',
-                      }}
-                    >
-                      {name} — 복구
-                    </button>
+                    <div key={actId} className="flex items-center gap-2">
+                      <span className="text-sm font-body flex-1" style={{ color: 'var(--text-primary)' }}>{name}</span>
+                      <button
+                        onClick={() => handleRestoreAct(actId)}
+                        className="px-3 py-1 text-xs rounded-lg font-body transition-all"
+                        style={{ background: 'rgba(212,175,55,0.1)', border: '1px solid rgba(212,175,55,0.35)', color: 'var(--gold-primary)' }}
+                      >
+                        복구
+                      </button>
+                      {isCustom && (
+                        <button
+                          onClick={() => { if (window.confirm(`'${name}' 액트를 영구 삭제하시겠습니까? 복구가 불가능합니다.`)) handlePermanentlyDeleteAct(actId); }}
+                          className="px-3 py-1 text-xs rounded-lg font-body transition-all"
+                          style={{ background: 'rgba(220,38,38,0.1)', border: '1px solid rgba(220,38,38,0.3)', color: '#f87171' }}
+                        >
+                          영구삭제
+                        </button>
+                      )}
+                    </div>
                   );
                 })}
               </div>

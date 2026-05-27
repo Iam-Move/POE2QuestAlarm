@@ -184,11 +184,11 @@ function ActGroup({
           )}
           {isEditMode && (
             <button
-              onClick={() => { if (window.confirm(`'${act.name}' 액트를 삭제하시겠습니까?`)) onDeleteAct(act.id); }}
+              onClick={() => { if (window.confirm(`액트를 숨김하시겠습니까?\n(하단에서 복구 가능)`)) onDeleteAct(act.id); }}
               className="text-xs px-2 py-0.5 rounded transition-colors"
               style={{ color: '#f87171', background: 'rgba(220,38,38,0.1)', border: '1px solid rgba(220,38,38,0.3)' }}
             >
-              삭제
+              숨김
             </button>
           )}
           {isEditMode && (

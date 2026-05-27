@@ -28,8 +28,8 @@ function DataModal({ isOpen, onClose, actsData, completed, filterDefs, customFil
     e.target.value = '';
   };
 
-  const handleConfirm = (includeCompleted) => {
-    onImport(parsedItems, includeCompleted);
+  const handleConfirm = () => {
+    onImport(parsedItems);
     setStep('done');
   };
 
@@ -48,39 +48,30 @@ function DataModal({ isOpen, onClose, actsData, completed, filterDefs, customFil
       return (
         <>
           <h2 className="text-xl font-title font-bold mb-3" style={{ color: 'var(--gold-primary)' }}>
-            가져오기 옵션
+            가져오기 확인
           </h2>
           <p className="text-sm text-gray-300 mb-2">
-            <span style={{ color: 'var(--gold-light)' }} className="font-semibold">{parsedItems.length}개</span> 퀘스트를 불러왔습니다.
+            <span style={{ color: 'var(--gold-light)' }} className="font-semibold">{parsedItems.length}개</span> 퀘스트를 가져옵니다.
           </p>
           {parseErrors.length > 0 && (
             <div className="mb-3 text-xs text-yellow-400 bg-yellow-900/20 rounded p-2">
               {parseErrors.length}개 행에 오류가 있어 건너뜁니다.
             </div>
           )}
-          <p className="text-sm text-gray-400 mb-4">어떻게 가져오시겠습니까?</p>
-          <div className="space-y-3 mb-4">
+          <div className="space-y-3 mt-4">
             <button
-              onClick={() => handleConfirm(false)}
-              className="w-full px-4 py-3 rounded-lg text-left bg-poe-dark border border-poe-border hover:border-yellow-500/50 transition-colors"
+              onClick={handleConfirm}
+              className="w-full px-4 py-3 rounded-lg text-sm bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-white font-semibold transition-colors"
             >
-              <div className="font-semibold text-white text-sm">목록만 가져오기</div>
-              <div className="text-xs text-gray-400 mt-0.5">퀘스트 목록만 추가합니다. 완료 체크는 무시됩니다.</div>
+              가져오기
             </button>
             <button
-              onClick={() => handleConfirm(true)}
-              className="w-full px-4 py-3 rounded-lg text-left bg-poe-dark border border-poe-border hover:border-yellow-500/50 transition-colors"
+              onClick={() => setStep('main')}
+              className="w-full px-4 py-2 rounded-lg text-sm bg-gray-700 hover:bg-gray-600 text-white transition-colors"
             >
-              <div className="font-semibold text-white text-sm">진행상황 포함 가져오기</div>
-              <div className="text-xs text-gray-400 mt-0.5">완료 체크까지 함께 복원합니다. 내 백업 파일 복원 시 사용하세요.</div>
+              취소
             </button>
           </div>
-          <button
-            onClick={() => setStep('main')}
-            className="w-full px-4 py-2 rounded-lg text-sm bg-gray-700 hover:bg-gray-600 text-white transition-colors"
-          >
-            취소
-          </button>
         </>
       );
     }
