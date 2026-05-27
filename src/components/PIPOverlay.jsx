@@ -11,13 +11,14 @@ function PIPOverlay({
   onUndo, canUndo,
   timerSeconds, timerRunning, timerStartedAt,
   onTimerStart, onTimerStop, onTimerReset, onTimerEdit,
-  activeFilterName, onProgressReset,
+  activeFilterName, onProgressReset, allActs,
 }) {
   const containerRef = useRef(null);
   const [isReady, setIsReady] = useState(false);
   const [fadingQuests, setFadingQuests] = useState(new Set()); // 페이드아웃 중인 퀘스트
   const prevCompletedRef = useRef([]); // 이전 completed 상태 저장
-  const [confirmReset, setConfirmReset] = useState(false);
+  const [resetStep, setResetStep] = useState(null); // null | 'choose' | 'act-select'
+  const [selectedActs, setSelectedActs] = useState(new Set());
 
   // 완료된 퀘스트 애니메이션 처리 (단순화)
   useEffect(() => {
@@ -212,31 +213,9 @@ function PIPOverlay({
             compact
           />
           <div style={{ borderTop: '1px solid rgba(212,175,55,0.1)', paddingTop: '6px', marginTop: '6px' }}>
-            {confirmReset ? (
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.72rem' }}>
-                <span style={{ color: 'var(--text-secondary)' }}>진행도 초기화할까요?</span>
-                <button
-                  onClick={() => { onProgressReset(); setConfirmReset(false); }}
-                  style={{
-                    padding: '1px 8px', borderRadius: '4px', fontSize: '0.72rem',
-                    background: 'rgba(220,38,38,0.7)', color: '#fff', border: 'none', cursor: 'pointer',
-                  }}
-                >
-                  예
-                </button>
-                <button
-                  onClick={() => setConfirmReset(false)}
-                  style={{
-                    padding: '1px 8px', borderRadius: '4px', fontSize: '0.72rem',
-                    background: 'rgba(75,85,99,0.6)', color: '#d1d5db', border: 'none', cursor: 'pointer',
-                  }}
-                >
-                  취소
-                </button>
-              </div>
-            ) : (
+            {resetStep === null && (
               <button
-                onClick={() => setConfirmReset(true)}
+                onClick={() => setResetStep('choose')}
                 style={{
                   padding: '2px 10px', borderRadius: '4px', fontSize: '0.72rem',
                   background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.12)',
@@ -247,6 +226,85 @@ function PIPOverlay({
               >
                 ↺ 진행도 초기화
               </button>
+            )}
+            {resetStep === 'choose' && (
+              <div style={{ fontSize: '0.72rem' }}>
+                <span style={{ color: 'var(--text-secondary)' }}>초기화 방식:</span>
+                <div style={{ display: 'flex', gap: '4px', marginTop: '4px', flexWrap: 'wrap' }}>
+                  <button
+                    onClick={() => { onProgressReset(null); setResetStep(null); }}
+                    style={{ padding: '1px 8px', borderRadius: '4px', background: 'rgba(220,38,38,0.7)', color: '#fff', border: 'none', cursor: 'pointer', fontSize: '0.72rem' }}
+                  >
+                    전체
+                  </button>
+                  <button
+                    onClick={() => setResetStep('act-select')}
+                    style={{ padding: '1px 8px', borderRadius: '4px', background: 'rgba(212,175,55,0.2)', color: 'var(--gold-primary)', border: '1px solid rgba(212,175,55,0.4)', cursor: 'pointer', fontSize: '0.72rem' }}
+                  >
+                    액트별
+                  </button>
+                  <button
+                    onClick={() => setResetStep(null)}
+                    style={{ padding: '1px 8px', borderRadius: '4px', background: 'rgba(75,85,99,0.6)', color: '#d1d5db', border: 'none', cursor: 'pointer', fontSize: '0.72rem' }}
+                  >
+                    취소
+                  </button>
+                </div>
+              </div>
+            )}
+            {resetStep === 'act-select' && (
+              <div style={{ fontSize: '0.72rem' }}>
+                <div style={{ display: 'flex', gap: '8px', marginBottom: '4px' }}>
+                  <button
+                    onClick={() => setSelectedActs(new Set(allActs.map(a => a.id)))}
+                    style={{ background: 'none', border: 'none', color: 'var(--gold-primary)', cursor: 'pointer', fontSize: '0.68rem', padding: 0, textDecoration: 'underline' }}
+                  >
+                    전체선택
+                  </button>
+                  <button
+                    onClick={() => setSelectedActs(new Set())}
+                    style={{ background: 'none', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', fontSize: '0.68rem', padding: 0, textDecoration: 'underline' }}
+                  >
+                    해제
+                  </button>
+                </div>
+                <div style={{ maxHeight: '120px', overflowY: 'auto', marginBottom: '6px', paddingRight: '2px' }}>
+                  {allActs.map(act => (
+                    <label key={act.id} style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '2px 0', cursor: 'pointer' }}>
+                      <input
+                        type="checkbox"
+                        checked={selectedActs.has(act.id)}
+                        onChange={() => setSelectedActs(prev => {
+                          const next = new Set(prev);
+                          next.has(act.id) ? next.delete(act.id) : next.add(act.id);
+                          return next;
+                        })}
+                        style={{ accentColor: 'var(--gold-primary)', flexShrink: 0 }}
+                      />
+                      <span style={{ color: 'var(--text-primary)' }}>{act.name}</span>
+                    </label>
+                  ))}
+                </div>
+                <div style={{ display: 'flex', gap: '4px' }}>
+                  <button
+                    disabled={selectedActs.size === 0}
+                    onClick={() => { onProgressReset([...selectedActs]); setResetStep(null); setSelectedActs(new Set()); }}
+                    style={{
+                      padding: '1px 8px', borderRadius: '4px', fontSize: '0.72rem', cursor: selectedActs.size > 0 ? 'pointer' : 'default',
+                      background: selectedActs.size > 0 ? 'rgba(220,38,38,0.7)' : 'rgba(100,100,100,0.3)',
+                      color: selectedActs.size > 0 ? '#fff' : 'rgba(255,255,255,0.3)', border: 'none',
+                    }}
+                  >
+                    초기화 ({selectedActs.size}개)
+                  </button>
+                  <button
+                    onClick={() => { setResetStep(null); setSelectedActs(new Set()); }}
+                    style={{ padding: '1px 8px', borderRadius: '4px', background: 'rgba(75,85,99,0.6)', color: '#d1d5db', border: 'none', cursor: 'pointer', fontSize: '0.72rem' }}
+                  >
+                    취소
+                  </button>
+                </div>
+              </div>
             )}
           </div>
         </div>

@@ -723,7 +723,8 @@ function App() {
             onTimerReset={handleTimerReset}
             onTimerEdit={handleTimerEdit}
             activeFilterName={activeFilterName}
-            onProgressReset={() => handleProgressReset(null)}
+            allActs={mergedQuestsData?.acts || []}
+            onProgressReset={handleProgressReset}
           />
         )}
 
