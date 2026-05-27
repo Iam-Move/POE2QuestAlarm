@@ -39,6 +39,7 @@ function App() {
   const [undoStack, setUndoStack] = useState([]);
   const [isResetModalOpen, setIsResetModalOpen] = useState(false);
   const [customActs, setCustomActs] = useState([]);
+  const [hiddenActs, setHiddenActs] = useState([]);
   const [actOverrides, setActOverrides] = useState({});
   const [actOrder, setActOrder] = useState([]);
 
@@ -56,6 +57,7 @@ function App() {
         setCustomFilterSets(savedState.customFilterSets || {});
         setCustomQuestData(savedState.customQuestData || {});
         setCustomActs(savedState.customActs || []);
+        setHiddenActs(savedState.hiddenActs || []);
         setActOverrides(savedState.actOverrides || {});
         setActOrder(savedState.actOrder || []);
         setQuestOrder(savedState.questOrder || {});
@@ -82,9 +84,9 @@ function App() {
 
   useEffect(() => {
     if (!loading) {
-      saveState({ filter, completed, filterDefs, customFilterSets, customQuestData, customActs, actOverrides, actOrder, questOrder, timerSeconds, timerStartedAt });
+      saveState({ filter, completed, filterDefs, customFilterSets, customQuestData, customActs, hiddenActs, actOverrides, actOrder, questOrder, timerSeconds, timerStartedAt });
     }
-  }, [filter, completed, filterDefs, customFilterSets, customQuestData, customActs, actOverrides, actOrder, questOrder, timerSeconds, timerStartedAt, loading]);
+  }, [filter, completed, filterDefs, customFilterSets, customQuestData, customActs, hiddenActs, actOverrides, actOrder, questOrder, timerSeconds, timerStartedAt, loading]);
 
   useEffect(() => {
     const onScroll = () => setShowScrollTop(window.scrollY > 300);
@@ -141,6 +143,7 @@ function App() {
     setCustomFilterSets({});
     setCustomQuestData({});
     setCustomActs([]);
+    setHiddenActs([]);
     setActOverrides({});
     setActOrder([]);
     setQuestOrder({});
@@ -266,24 +269,33 @@ function App() {
   };
 
   const handleDeleteAct = (actId) => {
-    setCustomActs(prev => prev.filter(a => a.id !== actId));
-    setCustomQuestData(prev => {
-      const next = { ...prev };
-      Object.keys(next).forEach(id => { if (id.startsWith(`custom_${actId}_`)) delete next[id]; });
-      return next;
-    });
-    setCustomFilterSets(prev => {
-      const next = {};
-      Object.entries(prev).forEach(([fid, set]) => {
-        const s = { ...set };
-        Object.keys(s).forEach(qid => { if (qid.startsWith(`custom_${actId}_`)) delete s[qid]; });
-        next[fid] = s;
+    const isCustom = customActs.some(ca => ca.id === actId);
+    if (isCustom) {
+      setCustomActs(prev => prev.filter(a => a.id !== actId));
+      setCustomQuestData(prev => {
+        const next = { ...prev };
+        Object.keys(next).forEach(id => { if (id.startsWith(`custom_${actId}_`)) delete next[id]; });
+        return next;
       });
-      return next;
-    });
-    setQuestOrder(prev => { const n = { ...prev }; delete n[actId]; return n; });
+      setCustomFilterSets(prev => {
+        const next = {};
+        Object.entries(prev).forEach(([fid, set]) => {
+          const s = { ...set };
+          Object.keys(s).forEach(qid => { if (qid.startsWith(`custom_${actId}_`)) delete s[qid]; });
+          next[fid] = s;
+        });
+        return next;
+      });
+      setQuestOrder(prev => { const n = { ...prev }; delete n[actId]; return n; });
+    } else {
+      setHiddenActs(prev => [...new Set([...prev, actId])]);
+    }
     setActOrder(prev => prev.filter(id => id !== actId));
     setActOverrides(prev => { const n = { ...prev }; delete n[actId]; return n; });
+  };
+
+  const handleRestoreAct = (actId) => {
+    setHiddenActs(prev => prev.filter(id => id !== actId));
   };
 
   const handleMoveAct = (actId, direction) => {
@@ -511,7 +523,7 @@ function App() {
       .filter(ca => !builtInActIds.has(ca.id))
       .map(ca => ({ id: ca.id, name: ca.name, quests: [] }));
 
-    let baseActs = [...questsData.acts, ...extraActs];
+    let baseActs = [...questsData.acts, ...extraActs].filter(a => !hiddenActs.includes(a.id));
     if (actOrder.length > 0) {
       const actMap = new Map(baseActs.map(a => [a.id, a]));
       const ordered = actOrder.filter(id => actMap.has(id)).map(id => actMap.get(id));
@@ -792,6 +804,33 @@ function App() {
                 newlyAddedQuestId={newlyAddedQuestId}
               />
             ))
+          )}
+          {isEditMode && hiddenActs.length > 0 && (
+            <div className="mt-4 glass-card rounded-lg p-5" style={{ border: '1px dashed rgba(212,175,55,0.25)' }}>
+              <p className="text-xs font-body mb-3" style={{ color: 'var(--text-secondary)' }}>
+                숨겨진 액트 ({hiddenActs.length}개)
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {hiddenActs.map(actId => {
+                  const builtIn = questsData?.acts.find(a => a.id === actId);
+                  const name = actOverrides[actId] || builtIn?.name || actId;
+                  return (
+                    <button
+                      key={actId}
+                      onClick={() => handleRestoreAct(actId)}
+                      className="px-3 py-1.5 text-xs rounded-lg font-body transition-all hover:scale-105"
+                      style={{
+                        background: 'rgba(212,175,55,0.1)',
+                        border: '1px solid rgba(212,175,55,0.35)',
+                        color: 'var(--gold-primary)',
+                      }}
+                    >
+                      {name} — 복구
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
           )}
         </main>
 

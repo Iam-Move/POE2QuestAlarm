@@ -182,7 +182,7 @@ function ActGroup({
               </button>
             </>
           )}
-          {isEditMode && isCustomAct && (
+          {isEditMode && (
             <button
               onClick={() => { if (window.confirm(`'${act.name}' 액트를 삭제하시겠습니까?`)) onDeleteAct(act.id); }}
               className="text-xs px-2 py-0.5 rounded transition-colors"
@@ -192,18 +192,19 @@ function ActGroup({
             </button>
           )}
           {isEditMode && (
-            <div className="flex gap-0.5">
+            <div className="flex items-center gap-1">
+              <span className="text-xs" style={{ color: 'var(--text-secondary)', opacity: 0.6, whiteSpace: 'nowrap' }}>Act 순서</span>
               <button
                 onClick={() => onMoveAct(act.id, 'up')}
                 className="text-xs px-1.5 py-0.5 rounded transition-colors"
                 style={{ color: 'var(--text-secondary)', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)' }}
-                title="위로"
+                title="위로 이동"
               >▲</button>
               <button
                 onClick={() => onMoveAct(act.id, 'down')}
                 className="text-xs px-1.5 py-0.5 rounded transition-colors"
                 style={{ color: 'var(--text-secondary)', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)' }}
-                title="아래로"
+                title="아래로 이동"
               >▼</button>
             </div>
           )}
