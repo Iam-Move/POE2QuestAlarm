@@ -722,6 +722,8 @@ function App() {
             onTimerStop={handleTimerStop}
             onTimerReset={handleTimerReset}
             onTimerEdit={handleTimerEdit}
+            activeFilterName={activeFilterName}
+            onProgressReset={() => handleProgressReset(null)}
           />
         )}
 

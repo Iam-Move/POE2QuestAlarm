@@ -11,11 +11,13 @@ function PIPOverlay({
   onUndo, canUndo,
   timerSeconds, timerRunning, timerStartedAt,
   onTimerStart, onTimerStop, onTimerReset, onTimerEdit,
+  activeFilterName, onProgressReset,
 }) {
   const containerRef = useRef(null);
   const [isReady, setIsReady] = useState(false);
   const [fadingQuests, setFadingQuests] = useState(new Set()); // 페이드아웃 중인 퀘스트
   const prevCompletedRef = useRef([]); // 이전 completed 상태 저장
+  const [confirmReset, setConfirmReset] = useState(false);
 
   // 완료된 퀘스트 애니메이션 처리 (단순화)
   useEffect(() => {
@@ -190,7 +192,14 @@ function PIPOverlay({
             ↩ 되돌리기
           </button>
         </div>
-        <p className="text-xs mb-2" style={{ color: 'var(--text-secondary)' }}>남은 퀘스트만 표시</p>
+        <p className="text-xs mb-2" style={{ color: 'var(--text-secondary)' }}>
+          남은 퀘스트만 표시
+          {activeFilterName && (
+            <span style={{ marginLeft: '6px', color: 'var(--gold-primary)', fontWeight: 600 }}>
+              [{activeFilterName}]
+            </span>
+          )}
+        </p>
         <div style={{ borderTop: '1px solid rgba(212,175,55,0.15)', paddingTop: '8px' }}>
           <Timer
             timerSeconds={timerSeconds}
@@ -202,6 +211,44 @@ function PIPOverlay({
             onEdit={onTimerEdit}
             compact
           />
+          <div style={{ borderTop: '1px solid rgba(212,175,55,0.1)', paddingTop: '6px', marginTop: '6px' }}>
+            {confirmReset ? (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.72rem' }}>
+                <span style={{ color: 'var(--text-secondary)' }}>진행도 초기화할까요?</span>
+                <button
+                  onClick={() => { onProgressReset(); setConfirmReset(false); }}
+                  style={{
+                    padding: '1px 8px', borderRadius: '4px', fontSize: '0.72rem',
+                    background: 'rgba(220,38,38,0.7)', color: '#fff', border: 'none', cursor: 'pointer',
+                  }}
+                >
+                  예
+                </button>
+                <button
+                  onClick={() => setConfirmReset(false)}
+                  style={{
+                    padding: '1px 8px', borderRadius: '4px', fontSize: '0.72rem',
+                    background: 'rgba(75,85,99,0.6)', color: '#d1d5db', border: 'none', cursor: 'pointer',
+                  }}
+                >
+                  취소
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={() => setConfirmReset(true)}
+                style={{
+                  padding: '2px 10px', borderRadius: '4px', fontSize: '0.72rem',
+                  background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.12)',
+                  color: 'var(--text-secondary)', cursor: 'pointer', transition: 'all 0.2s',
+                }}
+                onMouseEnter={e => { e.currentTarget.style.background = 'rgba(220,38,38,0.15)'; e.currentTarget.style.borderColor = 'rgba(220,38,38,0.4)'; e.currentTarget.style.color = '#f87171'; }}
+                onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.05)'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.12)'; e.currentTarget.style.color = 'var(--text-secondary)'; }}
+              >
+                ↺ 진행도 초기화
+              </button>
+            )}
+          </div>
         </div>
       </div>
 
