@@ -17,7 +17,7 @@ export function filterQuests(questsData, activeFilter, filterDefs, customFilterS
       ...act,
       quests: act.quests.filter(quest => {
         if (isCustomType) {
-          if (isEditMode) return true;
+          if (isEditMode && !activeDef?.csvOnly) return true;
           return activeCustomSet[quest.id] === true;
         }
         return quest.filters && quest.filters[activeFilter];

@@ -141,10 +141,7 @@ export function parseCsv(csvText) {
     if (!actId) { errors.push(`${i + 2}행: act가 비어있습니다`); return; }
     if (!name) { errors.push(`${i + 2}행: name이 비어있습니다`); return; }
 
-    const customFilterNames = customFilterCols.filter(originalCol => {
-      const idx = originalHeaders.indexOf(originalCol);
-      return idx >= 0 && (values[idx] ?? '').trim().toLowerCase() === 'true';
-    });
+    const customFilterNames = [...customFilterCols];
 
     items.push({
       actId,

@@ -96,6 +96,10 @@ function ActGroup({
   customFilterSet,
   onToggleFilterMembership,
   onBulkSetFilterMembership,
+  isCustomAct,
+  onRenameAct,
+  onDeleteAct,
+  onMoveAct,
   onUpdateQuest,
   onDeleteQuest,
   onAddQuest,
@@ -140,12 +144,26 @@ function ActGroup({
 
   return (
     <div id={act.id} className={`mb-8 glass-card rounded-lg p-6 ${bgColor}`}>
-      <div className="mb-4 pb-3 border-b flex items-center justify-between" style={{ borderColor: 'var(--border-glow)' }}>
-        <h2 className="text-2xl font-title font-semibold"
-            style={{ color: 'var(--gold-primary)' }}>
-          {act.name}
-        </h2>
-        <div className="flex items-center gap-2">
+      <div className="mb-4 pb-3 border-b flex items-center justify-between gap-2" style={{ borderColor: 'var(--border-glow)' }}>
+        {isEditMode ? (
+          <input
+            value={act.name}
+            onChange={(e) => onRenameAct(act.id, e.target.value)}
+            className="text-2xl font-title font-semibold bg-transparent outline-none min-w-0 flex-1"
+            style={{
+              color: 'var(--gold-primary)',
+              border: '1px solid rgba(212,175,55,0.4)',
+              borderRadius: '4px',
+              padding: '2px 8px',
+            }}
+          />
+        ) : (
+          <h2 className="text-2xl font-title font-semibold flex-1"
+              style={{ color: 'var(--gold-primary)' }}>
+            {act.name}
+          </h2>
+        )}
+        <div className="flex items-center gap-1.5 flex-shrink-0">
           {isEditMode && currentFilterIsCustom && (
             <>
               <button
@@ -164,15 +182,31 @@ function ActGroup({
               </button>
             </>
           )}
-          <button
-            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-            className="text-yellow-400/50 hover:text-yellow-400 transition-colors p-1"
-            aria-label="맨 위로"
-          >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
-            </svg>
-          </button>
+          {isEditMode && isCustomAct && (
+            <button
+              onClick={() => { if (window.confirm(`'${act.name}' 액트를 삭제하시겠습니까?`)) onDeleteAct(act.id); }}
+              className="text-xs px-2 py-0.5 rounded transition-colors"
+              style={{ color: '#f87171', background: 'rgba(220,38,38,0.1)', border: '1px solid rgba(220,38,38,0.3)' }}
+            >
+              삭제
+            </button>
+          )}
+          {isEditMode && (
+            <div className="flex gap-0.5">
+              <button
+                onClick={() => onMoveAct(act.id, 'up')}
+                className="text-xs px-1.5 py-0.5 rounded transition-colors"
+                style={{ color: 'var(--text-secondary)', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)' }}
+                title="위로"
+              >▲</button>
+              <button
+                onClick={() => onMoveAct(act.id, 'down')}
+                className="text-xs px-1.5 py-0.5 rounded transition-colors"
+                style={{ color: 'var(--text-secondary)', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)' }}
+                title="아래로"
+              >▼</button>
+            </div>
+          )}
         </div>
       </div>
 
