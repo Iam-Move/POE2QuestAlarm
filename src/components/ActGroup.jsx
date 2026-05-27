@@ -95,6 +95,7 @@ function ActGroup({
   currentFilterName,
   customFilterSet,
   onToggleFilterMembership,
+  onBulkSetFilterMembership,
   onUpdateQuest,
   onDeleteQuest,
   onAddQuest,
@@ -144,15 +145,35 @@ function ActGroup({
             style={{ color: 'var(--gold-primary)' }}>
           {act.name}
         </h2>
-        <button
-          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-          className="text-yellow-400/50 hover:text-yellow-400 transition-colors p-1"
-          aria-label="맨 위로"
-        >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
-          </svg>
-        </button>
+        <div className="flex items-center gap-2">
+          {isEditMode && currentFilterIsCustom && (
+            <>
+              <button
+                onClick={() => onBulkSetFilterMembership(act.quests.map(q => q.id), true)}
+                className="text-xs px-2 py-0.5 rounded transition-colors"
+                style={{ color: 'var(--gold-primary)', background: 'rgba(212,175,55,0.12)', border: '1px solid rgba(212,175,55,0.3)' }}
+              >
+                전체선택
+              </button>
+              <button
+                onClick={() => onBulkSetFilterMembership(act.quests.map(q => q.id), false)}
+                className="text-xs px-2 py-0.5 rounded transition-colors"
+                style={{ color: 'var(--text-secondary)', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.12)' }}
+              >
+                해제
+              </button>
+            </>
+          )}
+          <button
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            className="text-yellow-400/50 hover:text-yellow-400 transition-colors p-1"
+            aria-label="맨 위로"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+            </svg>
+          </button>
+        </div>
       </div>
 
       <DndContext

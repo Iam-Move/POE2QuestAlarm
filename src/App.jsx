@@ -38,6 +38,7 @@ function App() {
   const [timerStartedAt, setTimerStartedAt] = useState(null);
   const [undoStack, setUndoStack] = useState([]);
   const [isResetModalOpen, setIsResetModalOpen] = useState(false);
+  const [customActs, setCustomActs] = useState([]);
 
   useEffect(() => {
     const sharedState = decodeStateFromUrl(window.location.hash);
@@ -52,6 +53,7 @@ function App() {
         setFilterDefs(savedState.filterDefs || DEFAULT_FILTER_DEFS);
         setCustomFilterSets(savedState.customFilterSets || {});
         setCustomQuestData(savedState.customQuestData || {});
+        setCustomActs(savedState.customActs || []);
         setQuestOrder(savedState.questOrder || {});
         setTimerSeconds(savedState.timerSeconds || 0);
         setTimerStartedAt(savedState.timerStartedAt || null);
@@ -76,9 +78,9 @@ function App() {
 
   useEffect(() => {
     if (!loading) {
-      saveState({ filter, completed, filterDefs, customFilterSets, customQuestData, questOrder, timerSeconds, timerStartedAt });
+      saveState({ filter, completed, filterDefs, customFilterSets, customQuestData, customActs, questOrder, timerSeconds, timerStartedAt });
     }
-  }, [filter, completed, filterDefs, customFilterSets, customQuestData, questOrder, timerSeconds, timerStartedAt, loading]);
+  }, [filter, completed, filterDefs, customFilterSets, customQuestData, customActs, questOrder, timerSeconds, timerStartedAt, loading]);
 
   useEffect(() => {
     const onScroll = () => setShowScrollTop(window.scrollY > 300);
@@ -134,6 +136,7 @@ function App() {
     setFilterDefs(DEFAULT_FILTER_DEFS);
     setCustomFilterSets({});
     setCustomQuestData({});
+    setCustomActs([]);
     setQuestOrder({});
     setTimerSeconds(0);
     setTimerRunning(false);
@@ -164,7 +167,7 @@ function App() {
   };
 
   const handleCsvImport = (items, includeCompleted) => {
-    const validActIds = mergedQuestsData?.acts.map(a => a.id) || [];
+    const validActIds = new Set(mergedQuestsData?.acts.map(a => a.id) || []);
     const newCustomQuestData = { ...customQuestData };
     const newQuestOrder = { ...questOrder };
     const newCustomFilterSets = { ...customFilterSets };
@@ -190,11 +193,17 @@ function App() {
       }
     });
 
+    // Collect new act definitions for unknown actIds
+    const newActsMap = new Map();
+    const existingCustomActIds = new Set(customActs.map(a => a.id));
+
     const byAct = {};
     items.forEach(item => {
-      if (!validActIds.includes(item.actId)) return;
       if (!byAct[item.actId]) byAct[item.actId] = [];
       byAct[item.actId].push(item);
+      if (!validActIds.has(item.actId) && !existingCustomActIds.has(item.actId)) {
+        newActsMap.set(item.actId, { id: item.actId, name: item.actId });
+      }
     });
 
     Object.entries(byAct).forEach(([actId, actItems]) => {
@@ -222,6 +231,13 @@ function App() {
       newQuestOrder[actId] = newIds;
     });
 
+    if (newActsMap.size > 0) {
+      setCustomActs(prev => {
+        const existingIds = new Set(prev.map(a => a.id));
+        const toAdd = [...newActsMap.values()].filter(a => !existingIds.has(a.id));
+        return [...prev, ...toAdd];
+      });
+    }
     setCustomQuestData(newCustomQuestData);
     setQuestOrder(newQuestOrder);
     setCustomFilterSets(newCustomFilterSets);
@@ -237,6 +253,15 @@ function App() {
         [questId]: !(prev[filter] || {})[questId]
       }
     }));
+  };
+
+  const handleBulkSetFilterMembership = (questIds, value) => {
+    setCustomFilterSets(prev => {
+      const current = prev[filter] || {};
+      const updated = { ...current };
+      questIds.forEach(id => { updated[id] = value; });
+      return { ...prev, [filter]: updated };
+    });
   };
 
   const handleToggleEditMode = () => {
@@ -438,9 +463,14 @@ function App() {
   const getMergedQuestsData = () => {
     if (!questsData) return null;
 
+    const builtInActIds = new Set(questsData.acts.map(a => a.id));
+    const extraActs = customActs
+      .filter(ca => !builtInActIds.has(ca.id))
+      .map(ca => ({ id: ca.id, name: ca.name, quests: [] }));
+
     return {
       ...questsData,
-      acts: questsData.acts.map(act => {
+      acts: [...questsData.acts, ...extraActs].map(act => {
         const mergedQuests = act.quests
           .filter(quest => {
             const customData = customQuestData[quest.id];
@@ -696,6 +726,7 @@ function App() {
                 currentFilterName={activeFilterName}
                 customFilterSet={activeCustomFilterSet}
                 onToggleFilterMembership={handleToggleFilterMembership}
+                onBulkSetFilterMembership={handleBulkSetFilterMembership}
                 onUpdateQuest={handleUpdateQuest}
                 onDeleteQuest={handleDeleteQuest}
                 onAddQuest={handleAddQuest}
