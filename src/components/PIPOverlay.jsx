@@ -12,6 +12,7 @@ function PIPOverlay({
   timerSeconds, timerRunning, timerStartedAt,
   onTimerStart, onTimerStop, onTimerReset, onTimerEdit,
   activeFilterName, onProgressReset,
+  pipOpacity, onPipOpacityChange,
 }) {
   const containerRef = useRef(null);
   const [isReady, setIsReady] = useState(false);
@@ -171,7 +172,7 @@ function PIPOverlay({
     .filter(act => act.quests.length > 0);
 
   return createPortal(
-    <div className="p-4" style={{ fontSize: '16px', color: 'var(--text-primary)' }}>
+    <div className="p-4" style={{ fontSize: '16px', color: 'var(--text-primary)', opacity: pipOpacity ?? 1 }}>
       <div className="mb-3 pb-3" style={{ borderBottom: '1px solid var(--border-glow)' }}>
         <div className="flex items-center justify-between mb-1">
           <h2 className="text-xl font-bold" style={{ color: 'var(--gold-primary)' }}>POE2 Quest</h2>
@@ -248,6 +249,21 @@ function PIPOverlay({
                 ↺ 진행도 초기화
               </button>
             )}
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '6px' }}>
+            <span style={{ fontSize: '0.68rem', color: 'var(--text-secondary)', flexShrink: 0 }}>투명도</span>
+            <input
+              type="range"
+              min="0.2"
+              max="1"
+              step="0.05"
+              value={pipOpacity ?? 1}
+              onChange={e => onPipOpacityChange(Number(e.target.value))}
+              style={{ flex: 1, accentColor: 'var(--gold-primary)', cursor: 'pointer' }}
+            />
+            <span style={{ fontSize: '0.68rem', color: 'var(--text-secondary)', width: '28px', textAlign: 'right' }}>
+              {Math.round((pipOpacity ?? 1) * 100)}%
+            </span>
           </div>
         </div>
       </div>

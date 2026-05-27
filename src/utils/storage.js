@@ -14,6 +14,7 @@ export function saveState(state) {
       questOrder: state.questOrder || {},
       timerSeconds: state.timerSeconds || 0,
       timerStartedAt: state.timerStartedAt || null,
+      pipOpacity: state.pipOpacity ?? 1,
     };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
   } catch (error) {
@@ -55,6 +56,7 @@ export function loadState() {
       timerSeconds,
       timerStartedAt,
       timerRunning,
+      pipOpacity: data.pipOpacity ?? 1,
     };
   } catch (error) {
     console.error('Failed to load state:', error);
