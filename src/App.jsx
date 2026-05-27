@@ -245,6 +245,10 @@ function App() {
         return [...prev, ...toAdd];
       });
     }
+    const importedActIds = Object.keys(byAct);
+    if (importedActIds.some(id => permanentlyHiddenActs.includes(id))) {
+      setPermanentlyHiddenActs(prev => prev.filter(id => !importedActIds.includes(id)));
+    }
     setCustomQuestData(newCustomQuestData);
     setQuestOrder(newQuestOrder);
     setCustomFilterSets(newCustomFilterSets);
@@ -815,7 +819,11 @@ function App() {
               <div className="flex flex-col gap-2">
                 {hiddenActs.map(actId => {
                   const builtIn = questsData?.acts.find(a => a.id === actId);
+                  const isCustom = customActs.some(ca => ca.id === actId);
                   const name = actOverrides[actId] || builtIn?.name || actId;
+                  const confirmMsg = isCustom
+                    ? `'${name}' 액트를 영구 삭제하시겠습니까?\nCSV 재삽입 전까지 복구가 불가능합니다.`
+                    : `'${name}' 액트를 영구 삭제하시겠습니까?\n전체 초기화로만 복구할 수 있습니다.`;
                   return (
                     <div key={actId} className="flex items-center gap-2">
                       <span className="text-sm font-body flex-1" style={{ color: 'var(--text-primary)' }}>{name}</span>
@@ -827,7 +835,7 @@ function App() {
                         복구
                       </button>
                       <button
-                        onClick={() => { if (window.confirm(`'${name}' 액트를 영구 삭제하시겠습니까?\n전체 초기화로만 복구할 수 있습니다.`)) handlePermanentlyDeleteAct(actId); }}
+                        onClick={() => { if (window.confirm(confirmMsg)) handlePermanentlyDeleteAct(actId); }}
                         className="px-3 py-1 text-xs rounded-lg font-body transition-all"
                         style={{ background: 'rgba(220,38,38,0.1)', border: '1px solid rgba(220,38,38,0.3)', color: '#f87171' }}
                       >
