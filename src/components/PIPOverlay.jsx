@@ -64,7 +64,7 @@ function PIPOverlay({
     // 기본 스타일 추가
     pipDoc.body.style.margin = '0';
     pipDoc.body.style.padding = '0';
-    pipDoc.body.style.backgroundColor = '#0a0a0f';
+    pipDoc.body.style.backgroundColor = '#1e1e2e';
     pipDoc.body.style.color = 'var(--text-primary, #e8e6e3)';
     pipDoc.body.style.fontFamily = "'Noto Sans KR', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif";
     pipDoc.body.style.overflow = 'hidden'; // 스크롤바 1개만 (컨테이너에서만)
@@ -172,7 +172,16 @@ function PIPOverlay({
     .filter(act => act.quests.length > 0);
 
   return createPortal(
-    <div className="p-4" style={{ fontSize: '16px', color: 'var(--text-primary)', opacity: pipOpacity ?? 0.92, minHeight: '100vh' }}>
+    <div style={{ position: 'relative', minHeight: '100vh' }}>
+      <div style={{
+        position: 'fixed',
+        inset: 0,
+        background: '#0a0a0f',
+        opacity: pipOpacity ?? 0.92,
+        pointerEvents: 'none',
+        zIndex: 0,
+      }} />
+    <div className="p-4" style={{ position: 'relative', zIndex: 1, fontSize: '16px', color: 'var(--text-primary)' }}>
       <div className="mb-3 pb-3" style={{ borderBottom: '1px solid var(--border-glow)' }}>
         <div className="flex items-center gap-2 mb-1">
           <h2 className="text-xl font-bold" style={{ color: 'var(--gold-primary)', flexShrink: 0 }}>POE2 Quest</h2>
@@ -374,6 +383,7 @@ function PIPOverlay({
           ))}
         </div>
       )}
+    </div>
     </div>,
     containerRef.current
   );
