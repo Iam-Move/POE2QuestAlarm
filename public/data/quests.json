@@ -457,7 +457,7 @@
         {
           "id": "q35",
           "waypoint": "케스",
-          "name": "잃어버린 도시로 이동",
+          "name": "잃어버린 도시→묻힌 성소로 이동",
           "reward": "",
           "note": "",
           "filters": {
@@ -469,10 +469,10 @@
         },
         {
           "id": "q36",
-          "waypoint": "잃어버린 도시",
-          "name": "묻힌 성소로 이동",
-          "reward": "",
-          "note": "",
+          "waypoint": "묻힌 성소",
+          "name": "리그 콘텐츠 진행 후 보상, 케스의 심장부로 이동",
+          "reward": "하위 쥬얼러 오브",
+          "note": "리그 콘텐츠(계정당 1회)",
           "filters": {
             "regular": true,
             "semiStrict": true,
@@ -1275,9 +1275,9 @@
         {
           "id": "q97",
           "waypoint": "응가카누",
-          "name": "부족의 심장부로 이동",
-          "reward": "",
-          "note": "",
+          "name": "리그 콘텐츠 진행 후 보상, 부족의 심장부로 이동",
+          "reward": "상위 쥬얼러 오브",
+          "note": "리그 콘텐츠(계정당 1회)",
           "filters": {
             "regular": true,
             "semiStrict": true,
