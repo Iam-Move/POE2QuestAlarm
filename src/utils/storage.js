@@ -11,7 +11,9 @@ export function saveState(state) {
       filterDefs: state.filterDefs,
       customFilterSets: state.customFilterSets || {},
       customQuestData: state.customQuestData || {},
-      questOrder: state.questOrder || {}
+      questOrder: state.questOrder || {},
+      timerSeconds: state.timerSeconds || 0,
+      timerStartedAt: state.timerStartedAt || null,
     };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
   } catch (error) {
@@ -32,13 +34,27 @@ export function loadState() {
       customFilterSets = { custom: data.customFilters };
     }
 
+    // Timer: if it was running when saved, calculate elapsed and resume
+    let timerSeconds = data.timerSeconds || 0;
+    let timerStartedAt = data.timerStartedAt || null;
+    let timerRunning = false;
+    if (timerStartedAt) {
+      const elapsed = Math.floor((Date.now() - timerStartedAt) / 1000);
+      timerSeconds += elapsed;
+      timerStartedAt = Date.now();
+      timerRunning = true;
+    }
+
     return {
       filter: data.filter || 'regular',
       completed: data.completed || [],
       filterDefs: data.filterDefs || DEFAULT_FILTER_DEFS,
       customFilterSets,
       customQuestData: data.customQuestData || {},
-      questOrder: data.questOrder || {}
+      questOrder: data.questOrder || {},
+      timerSeconds,
+      timerStartedAt,
+      timerRunning,
     };
   } catch (error) {
     console.error('Failed to load state:', error);

@@ -1,11 +1,17 @@
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
+import Timer from './Timer';
 
 /**
  * PIP 오버레이 전용 UI
  * 완료되지 않은 퀘스트만 간단하게 표시
  */
-function PIPOverlay({ pipWindow, acts, completed, onToggle, currentFilter }) {
+function PIPOverlay({
+  pipWindow, acts, completed, onToggle, currentFilter,
+  onUndo, canUndo,
+  timerSeconds, timerRunning, timerStartedAt,
+  onTimerStart, onTimerStop, onTimerReset, onTimerEdit,
+}) {
   const containerRef = useRef(null);
   const [isReady, setIsReady] = useState(false);
   const [fadingQuests, setFadingQuests] = useState(new Set()); // 페이드아웃 중인 퀘스트
@@ -164,9 +170,39 @@ function PIPOverlay({ pipWindow, acts, completed, onToggle, currentFilter }) {
 
   return createPortal(
     <div className="p-4" style={{ fontSize: '16px', color: 'var(--text-primary)' }}>
-      <div className="mb-4 pb-3" style={{ borderBottom: '1px solid var(--border-glow)' }}>
-        <h2 className="text-xl font-bold" style={{ color: 'var(--gold-primary)' }}>POE2 Quest</h2>
-        <p className="text-xs" style={{ color: 'var(--text-secondary)' }}>남은 퀘스트만 표시</p>
+      <div className="mb-3 pb-3" style={{ borderBottom: '1px solid var(--border-glow)' }}>
+        <div className="flex items-center justify-between mb-1">
+          <h2 className="text-xl font-bold" style={{ color: 'var(--gold-primary)' }}>POE2 Quest</h2>
+          <button
+            onClick={onUndo}
+            disabled={!canUndo}
+            style={{
+              fontSize: '0.75rem',
+              padding: '2px 8px',
+              borderRadius: '4px',
+              background: canUndo ? 'rgba(212,175,55,0.15)' : 'rgba(255,255,255,0.05)',
+              border: `1px solid ${canUndo ? 'rgba(212,175,55,0.4)' : 'rgba(255,255,255,0.1)'}`,
+              color: canUndo ? 'var(--gold-primary)' : 'rgba(255,255,255,0.2)',
+              cursor: canUndo ? 'pointer' : 'default',
+              transition: 'all 0.2s',
+            }}
+          >
+            ↩ 되돌리기
+          </button>
+        </div>
+        <p className="text-xs mb-2" style={{ color: 'var(--text-secondary)' }}>남은 퀘스트만 표시</p>
+        <div style={{ borderTop: '1px solid rgba(212,175,55,0.15)', paddingTop: '8px' }}>
+          <Timer
+            timerSeconds={timerSeconds}
+            timerRunning={timerRunning}
+            timerStartedAt={timerStartedAt}
+            onStart={onTimerStart}
+            onStop={onTimerStop}
+            onReset={onTimerReset}
+            onEdit={onTimerEdit}
+            compact
+          />
+        </div>
       </div>
 
       {uncompletedActs.length === 0 ? (
@@ -175,7 +211,7 @@ function PIPOverlay({ pipWindow, acts, completed, onToggle, currentFilter }) {
         </div>
       ) : (
         <div style={{
-          maxHeight: '320px',
+          maxHeight: 'calc(100vh - 220px)',
           overflowY: 'auto',
           paddingRight: '4px'
         }}>

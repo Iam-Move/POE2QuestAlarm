@@ -8,6 +8,8 @@ import PIPOverlay from './components/PIPOverlay';
 import GuideModal from './components/GuideModal';
 import DataModal from './components/DataModal';
 import Logo from './components/Logo';
+import Timer from './components/Timer';
+import ResetModal from './components/ResetModal';
 import { filterQuests, DEFAULT_FILTER_DEFS } from './utils/filters';
 import { saveState, loadState, clearState } from './utils/storage';
 import { decodeStateFromUrl } from './utils/share';
@@ -31,6 +33,11 @@ function App() {
   const [isDataModalOpen, setIsDataModalOpen] = useState(false);
   const [newlyAddedQuestId, setNewlyAddedQuestId] = useState(null);
   const [showScrollTop, setShowScrollTop] = useState(false);
+  const [timerSeconds, setTimerSeconds] = useState(0);
+  const [timerRunning, setTimerRunning] = useState(false);
+  const [timerStartedAt, setTimerStartedAt] = useState(null);
+  const [undoStack, setUndoStack] = useState([]);
+  const [isResetModalOpen, setIsResetModalOpen] = useState(false);
 
   useEffect(() => {
     const sharedState = decodeStateFromUrl(window.location.hash);
@@ -46,6 +53,9 @@ function App() {
         setCustomFilterSets(savedState.customFilterSets || {});
         setCustomQuestData(savedState.customQuestData || {});
         setQuestOrder(savedState.questOrder || {});
+        setTimerSeconds(savedState.timerSeconds || 0);
+        setTimerStartedAt(savedState.timerStartedAt || null);
+        setTimerRunning(savedState.timerRunning || false);
       }
     }
 
@@ -66,9 +76,9 @@ function App() {
 
   useEffect(() => {
     if (!loading) {
-      saveState({ filter, completed, filterDefs, customFilterSets, customQuestData, questOrder });
+      saveState({ filter, completed, filterDefs, customFilterSets, customQuestData, questOrder, timerSeconds, timerStartedAt });
     }
-  }, [filter, completed, filterDefs, customFilterSets, customQuestData, questOrder, loading]);
+  }, [filter, completed, filterDefs, customFilterSets, customQuestData, questOrder, timerSeconds, timerStartedAt, loading]);
 
   useEffect(() => {
     const onScroll = () => setShowScrollTop(window.scrollY > 300);
@@ -81,9 +91,68 @@ function App() {
   };
 
   const handleToggleQuest = (questId) => {
-    setCompleted(prev =>
-      prev.includes(questId) ? prev.filter(id => id !== questId) : [...prev, questId]
+    const wasCompleted = completed.includes(questId);
+    setCompleted(prev => wasCompleted ? prev.filter(id => id !== questId) : [...prev, questId]);
+    setUndoStack(prev => [...prev.slice(-9), { questId, wasCompleted }]);
+  };
+
+  const handleUndo = () => {
+    setUndoStack(prev => {
+      if (prev.length === 0) return prev;
+      const { questId, wasCompleted } = prev[prev.length - 1];
+      setCompleted(c => wasCompleted ? [...c, questId] : c.filter(id => id !== questId));
+      return prev.slice(0, -1);
+    });
+  };
+
+  const handleTimerStart = () => {
+    setTimerStartedAt(Date.now());
+    setTimerRunning(true);
+  };
+
+  const handleTimerStop = () => {
+    if (timerStartedAt) {
+      const elapsed = Math.floor((Date.now() - timerStartedAt) / 1000);
+      setTimerSeconds(prev => prev + elapsed);
+    }
+    setTimerStartedAt(null);
+    setTimerRunning(false);
+  };
+
+  const handleTimerReset = () => {
+    setTimerSeconds(0);
+    setTimerRunning(false);
+    setTimerStartedAt(null);
+  };
+
+  const handleTimerEdit = (newSeconds) => {
+    setTimerSeconds(newSeconds);
+  };
+
+  const handleFullReset = () => {
+    setCompleted([]);
+    setFilterDefs(DEFAULT_FILTER_DEFS);
+    setCustomFilterSets({});
+    setCustomQuestData({});
+    setQuestOrder({});
+    setTimerSeconds(0);
+    setTimerRunning(false);
+    setTimerStartedAt(null);
+    setUndoStack([]);
+    clearState();
+  };
+
+  const handleProgressReset = (actIds) => {
+    if (!actIds) {
+      setCompleted([]);
+      return;
+    }
+    const targetIds = new Set(
+      (mergedQuestsData?.acts || [])
+        .filter(a => actIds.includes(a.id))
+        .flatMap(a => a.quests.map(q => q.id))
     );
+    setCompleted(prev => prev.filter(id => !targetIds.has(id)));
   };
 
   const handleReset = () => {
@@ -533,6 +602,14 @@ function App() {
               onToggle={handleToggleEditMode}
             />
 
+            <button
+              onClick={() => setIsResetModalOpen(true)}
+              className="px-4 py-2 rounded-lg font-body font-semibold transition-all text-sm bg-gray-700/60 hover:bg-gray-700 text-gray-300 hover:text-white shadow hover:shadow-lg hover:scale-105"
+              title="초기화 옵션"
+            >
+              초기화
+            </button>
+
             <ShareButton
               filter={filter}
               completed={completed}
@@ -578,6 +655,30 @@ function App() {
           </div>
         )}
 
+        <div
+          className="sticky top-0 z-40 mb-4 rounded-lg"
+          style={{
+            background: 'rgba(10, 10, 15, 0.92)',
+            backdropFilter: 'blur(10px)',
+            border: '1px solid var(--border-glow)',
+          }}
+        >
+          <div className="px-4 py-2.5 flex items-center justify-between gap-4">
+            <span className="text-xs font-body whitespace-nowrap" style={{ color: 'var(--text-secondary)' }}>
+              ⏱ 플레이 타임
+            </span>
+            <Timer
+              timerSeconds={timerSeconds}
+              timerRunning={timerRunning}
+              timerStartedAt={timerStartedAt}
+              onStart={handleTimerStart}
+              onStop={handleTimerStop}
+              onReset={handleTimerReset}
+              onEdit={handleTimerEdit}
+            />
+          </div>
+        </div>
+
         <main>
           {filteredActs.length === 0 ? (
             <div className="text-center text-gray-400 py-12">
@@ -612,6 +713,15 @@ function App() {
             completed={completed}
             onToggle={handleToggleQuest}
             currentFilter={filter}
+            onUndo={handleUndo}
+            canUndo={undoStack.length > 0}
+            timerSeconds={timerSeconds}
+            timerRunning={timerRunning}
+            timerStartedAt={timerStartedAt}
+            onTimerStart={handleTimerStart}
+            onTimerStop={handleTimerStop}
+            onTimerReset={handleTimerReset}
+            onTimerEdit={handleTimerEdit}
           />
         )}
 
@@ -638,6 +748,14 @@ function App() {
         <GuideModal
           isOpen={isGuideOpen}
           onClose={() => setIsGuideOpen(false)}
+        />
+
+        <ResetModal
+          isOpen={isResetModalOpen}
+          onClose={() => setIsResetModalOpen(false)}
+          acts={mergedQuestsData?.acts || []}
+          onFullReset={handleFullReset}
+          onProgressReset={handleProgressReset}
         />
         </div>
       </div>
