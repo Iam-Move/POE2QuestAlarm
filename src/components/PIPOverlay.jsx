@@ -64,7 +64,7 @@ function PIPOverlay({
     // 기본 스타일 추가
     pipDoc.body.style.margin = '0';
     pipDoc.body.style.padding = '0';
-    pipDoc.body.style.backgroundColor = 'var(--bg-primary, #0a0a0f)';
+    pipDoc.body.style.backgroundColor = 'transparent';
     pipDoc.body.style.color = 'var(--text-primary, #e8e6e3)';
     pipDoc.body.style.fontFamily = "'Noto Sans KR', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif";
     pipDoc.body.style.overflow = 'hidden'; // 스크롤바 1개만 (컨테이너에서만)
@@ -172,10 +172,19 @@ function PIPOverlay({
     .filter(act => act.quests.length > 0);
 
   return createPortal(
-    <div className="p-4" style={{ fontSize: '16px', color: 'var(--text-primary)', opacity: pipOpacity ?? 1 }}>
+    <div className="p-4" style={{ fontSize: '16px', color: 'var(--text-primary)', background: `rgba(10, 10, 15, ${pipOpacity ?? 0.92})`, minHeight: '100vh' }}>
       <div className="mb-3 pb-3" style={{ borderBottom: '1px solid var(--border-glow)' }}>
-        <div className="flex items-center justify-between mb-1">
-          <h2 className="text-xl font-bold" style={{ color: 'var(--gold-primary)' }}>POE2 Quest</h2>
+        <div className="flex items-center gap-2 mb-1">
+          <h2 className="text-xl font-bold" style={{ color: 'var(--gold-primary)', flexShrink: 0 }}>POE2 Quest</h2>
+          <input
+            type="range"
+            min="0.1"
+            max="1"
+            step="0.05"
+            value={pipOpacity ?? 0.92}
+            onChange={e => onPipOpacityChange(Number(e.target.value))}
+            style={{ flex: 1, accentColor: 'var(--gold-primary)', cursor: 'pointer', minWidth: 0 }}
+          />
           <button
             onClick={onUndo}
             disabled={!canUndo}
@@ -249,21 +258,6 @@ function PIPOverlay({
                 ↺ 진행도 초기화
               </button>
             )}
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '6px' }}>
-            <span style={{ fontSize: '0.68rem', color: 'var(--text-secondary)', flexShrink: 0 }}>투명도</span>
-            <input
-              type="range"
-              min="0.2"
-              max="1"
-              step="0.05"
-              value={pipOpacity ?? 1}
-              onChange={e => onPipOpacityChange(Number(e.target.value))}
-              style={{ flex: 1, accentColor: 'var(--gold-primary)', cursor: 'pointer' }}
-            />
-            <span style={{ fontSize: '0.68rem', color: 'var(--text-secondary)', width: '28px', textAlign: 'right' }}>
-              {Math.round((pipOpacity ?? 1) * 100)}%
-            </span>
           </div>
         </div>
       </div>
