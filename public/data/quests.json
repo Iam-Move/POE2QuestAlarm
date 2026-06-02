@@ -471,7 +471,7 @@
           "id": "q36",
           "waypoint": "묻힌 성소",
           "name": "리그 콘텐츠 진행 후 보상, 케스의 심장부로 이동",
-          "reward": "하위 쥬얼러 오브",
+          "reward": "(0.5부터 제공하지 않는듯함) 하위 쥬얼러 오브",
           "note": "리그 콘텐츠(계정당 1회)",
           "filters": {
             "regular": true,
@@ -749,26 +749,13 @@
         {
           "id": "q57",
           "waypoint": "들끓는 불모지",
-          "name": "아자크 습지대, 키메랄 습지대 웨이포인트 찾기",
+          "name": "신비한 피난처, 키메랄 습지대 웨이포인트 찾기",
           "reward": "",
           "note": "",
           "filters": {
             "regular": true,
             "semiStrict": true,
             "uber": false,
-            "custom": false
-          }
-        },
-        {
-          "id": "q58",
-          "waypoint": "아자크 습지대",
-          "name": "이그나그두크 처치",
-          "reward": "정신력+30/정신력젬(Lv.10)",
-          "note": "",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": true,
             "custom": false
           }
         },
@@ -852,7 +839,7 @@
         },
         {
           "id": "q65",
-          "waypoint": "들끓는 불모지",
+          "waypoint": "밀림 유적",
           "name": "큰 영혼핵으로 WP 바로 옆의 돌 제단 활성→ 마틀란 수로",
           "reward": "",
           "note": "마틀란 수로는 돌제단 근처에 있음",
@@ -873,6 +860,19 @@
             "regular": true,
             "semiStrict": true,
             "uber": false,
+            "custom": false
+          }
+        },
+        {
+          "id": "q58",
+          "waypoint": "아자크 습지대",
+          "name": "마틀란 수로→아자크 습지대→이그나그두크 처치",
+          "reward": "정신력+30/정신력젬(Lv.10)",
+          "note": "",
+          "filters": {
+            "regular": true,
+            "semiStrict": true,
+            "uber": true,
             "custom": false
           }
         },
