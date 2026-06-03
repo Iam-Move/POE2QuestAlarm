@@ -1517,19 +1517,6 @@
             "uber": false,
             "custom": false
           }
-        },
-        {
-          "id": "q107",
-          "waypoint": "울븐홀드",
-          "name": "오스윈 처치",
-          "reward": "패시브 2포인트",
-          "note": "",
-          "filters": {
-            "regular": true,
-            "semiStrict": true,
-            "uber": true,
-            "custom": false
-          }
         }
       ]
     },
